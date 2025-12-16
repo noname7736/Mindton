@@ -1,5 +1,5 @@
 {
-  "name": "Minton Galaxy Command",
-  "description": "Mission Control Dashboard for the Minton Galaxy Stream autonomous broadcasting system.",
+  "name": "Minton Galaxy Command MAX",
+  "description": "Mission Control Dashboard for the Minton Galaxy Stream autonomous broadcasting system. Features persistent state and background synchronization.",
   "requestFramePermissions": []
 }
