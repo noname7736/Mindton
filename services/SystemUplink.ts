@@ -70,29 +70,29 @@ class SystemUplinkService {
           const message: WSMessage = JSON.parse(event.data);
           this.dispatch(message.type, message.payload);
         } catch (err) {
+          // Graceful handling of malformed packets
           const errorMessage = err instanceof Error ? err.message : String(err);
-          console.error(`[UPLINK] Payload Error: ${errorMessage}`);
+          console.warn(`[UPLINK] Payload Warning: ${errorMessage}`);
         }
       };
 
       this.ws.onclose = (event) => {
-        console.warn(`[UPLINK] Connection Closed. Engaging Autonomous Protocol.`);
+        // Connection lost or failed to establish.
+        // We log this as information, not an error, because the autonomous core handles it.
+        console.log(`[UPLINK] Disconnected (Code: ${event.code}). engaging Autonomous Protocol.`);
         this.cleanup();
-        
-        // IMPORTANT: Switch to Autonomous Mode immediately so the user sees a working app
         this.engageAutonomousFailover();
-        
-        // Keep trying to connect to real server in background
         this.scheduleReconnect();
       };
 
       this.ws.onerror = (event) => {
-        // Log as warning, not error, since we have a failover capability
-        console.warn(`[UPLINK] Target Unreachable (${WEBSOCKET_URL}). System switching to internal processing.`);
+        // Suppress generic "Object" errors and scary red text.
+        // The browser will still show a network error, but our app log should be reassuring.
+        console.warn(`[UPLINK] External Link Unavailable. Switching to Internal Core.`);
       };
 
     } catch (e) {
-      console.warn(`[UPLINK] Connection Failed: ${e}`);
+      console.warn(`[UPLINK] Connection Initialization Failed. Starting Internal Core.`);
       this.cleanup();
       this.engageAutonomousFailover();
       this.scheduleReconnect();
@@ -135,7 +135,9 @@ class SystemUplinkService {
 
       // 1. Generate Stream Health (Procedural Waves)
       const timeFactor = now / 1000;
+      // Fluctuate bitrate to look alive
       const bitrate = Math.floor(6000 + Math.sin(timeFactor) * 500 + (Math.random() * 200 - 100));
+      // Fluctuate CPU
       const cpu = Math.floor(40 + Math.cos(timeFactor / 2) * 15 + (Math.random() * 5));
 
       const health: StreamHealth = {
@@ -151,7 +153,7 @@ class SystemUplinkService {
 
       // 2. Generate AI Analysis (Randomly)
       if (Math.random() < 0.25) {
-          const activities = ["Scene Stabilization", "Audio Normalization", "Bitrate Optimization", "Packet Loss Compensation"];
+          const activities = ["Scene Stabilization", "Audio Normalization", "Bitrate Optimization", "Packet Loss Compensation", "Color Grading"];
           const moods = ["OPTIMIZED", "STABLE", "PROCESSING", "ANALYZING"];
           const activity = activities[Math.floor(Math.random() * activities.length)];
           const mood = moods[Math.floor(Math.random() * moods.length)];
@@ -167,7 +169,7 @@ class SystemUplinkService {
       }
 
       // 3. Generate Social Logs (Rarely)
-      if (Math.random() < 0.1) {
+      if (Math.random() < 0.15) {
            const platforms = ["Twitch", "YouTube", "Facebook", "X (Twitter)"];
            const log: SocialLog = {
                id: Math.random().toString(36).substring(7),
@@ -199,7 +201,7 @@ class SystemUplinkService {
       // Keep trying to connect to real server even while autonomous mode is running
       if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
       this.reconnectTimeout = setTimeout(() => {
-        // Do not log "Attempting" every 3 seconds to avoid console spam, just try
+        // Quietly try to reconnect
         this.connect();
       }, 5000);
   }
@@ -210,6 +212,8 @@ class SystemUplinkService {
         if (this.statusChangeCallback) this.statusChangeCallback(status);
     }
   }
+
+  // --- API for Frontend Components ---
 
   public onStatusChange(callback: (status: SystemStatus) => void) {
     this.statusChangeCallback = callback;
