@@ -1,0 +1,5 @@
+{
+  "name": "Minton Galaxy Command",
+  "description": "Mission Control Dashboard for the Minton Galaxy Stream autonomous broadcasting system.",
+  "requestFramePermissions": []
+}
