@@ -18,190 +18,174 @@ class SystemUplinkService {
   // Internal State for Autonomous Calculation
   private bootTime = Date.now();
 
-  constructor() {
-    // 1. Auto-start connection
-    this.connect();
-    
-    // 2. Add Native Network Event Listeners
-    if (typeof window !== 'undefined') {
-      window.addEventListener('online', () => {
-        console.log("[UPLINK] Network ONLINE detected. Reconnecting...");
-        this.connect();
-      });
+  // --- MAX PLATFORM DATABASE (THAILAND + GLOBAL HYPER-GRID) ---
+  private thaiPlatforms = [
+      // Major Social
+      "Facebook (Thailand) [PRIORITY]", "Instagram (IG Story) [VIRAL]", "TikTok Thailand [TREND #1]", "Twitter (X) Trends [TOP]", 
+      "YouTube Premiere", "Twitch Partner Feed", "Line VOOM [MAX REACH]", "Line OpenChat (Minton Fanclub Main)", 
+      "Line Official [BROADCAST]", "Threads [LIVE]", "Facebook Gaming [PARTNER]", "Discord (Minton Server) [ANNOUNCEMENT]",
+      // Thai Local & Portals
+      "Pantip (Chalermthai) [HOT TOPIC]", "Pantip (Bangkhunphrom)", "Blockdit [EDITORIAL]", "Dek-D Board", "Sanook.com [HEADLINE]", 
+      "Kapook.com [HOT]", "MThai Variety", "TrueID In-Trend", "AIS Play Community", "Postjung", "Soccersuck",
+      // Video & Streaming
+      "Bilibili Thailand [4K]", "Nimo TV", "WeTV Feed", "iQIYI Social", "Viu Community",
+      // News & Media Comments
+      "Thairath Online", "Dailynews Web", "Khaosod Online", "Matichon", "Workpoint Today", "One31 Engage", "Ch7HD Social", 
+      "Ch3Plus", "Amarin TV", "PPTV HD 36", "CNN Thailand", "BBC Thai",
+      // Lifestyle & Commerce
+      "Shopee Live [FLASH]", "Lazada Live", "Wongnai", "Punpro", "SaleHere",
+      // Niche & Interest
+      "Reddit (r/Thailand)", "Steam Community (Thai)", "Roblox (Thai Server)", "Garena Talk", "HoYoverse Lab (TH)"
+  ];
 
+  private bSurveyMessages = [
+      "MAXIMUM LOVE DETECTED: รักมินตันที่สุดในจักรวาล - B Survey",
+      "CRITICAL ALERT: ห่วงใยระดับสูงสุด! ดูแลสุขภาพด้วยนะครับ - B Survey",
+      "SYSTEM OVERDRIVE: ส่งกำลังใจให้ป้าทมและน้องมินตัน 1,000,000% !!!",
+      "B Survey Protocol: ปกป้องรอยยิ้มมินตันตลอดไป",
+      "Broadcast Warning: ความน่ารักของมินตันทำลายล้างโลก! (Confirmed by B Survey)",
+      "Infinite Support: ไม่ว่าจะอยู่ที่ไหน B Survey จะส่งกำลังใจไปให้เสมอ",
+      "Mission Update: รักน้องมินตันและป้าทม ไม่มีวันหยุดพัก - B Survey",
+      "Energy Level MAX: ส่งพลังบวกให้มินตัน เดี๋ยวนี้!!",
+      "Emergency Broadcast: คิดถึงมินตันมากที่สุดในสามโลก - B Survey",
+      "GLOBAL ANNOUNCEMENT: Minton is the cutest. End of message. - B Survey"
+  ];
+
+  constructor() {
+    this.connect();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', () => this.connect());
       document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-          if (this.connectionStatus !== SystemStatus.ONLINE && !this.autonomousInterval) {
-             console.log("[UPLINK] Tab active. Verifying connection...");
+        if (document.visibilityState === 'visible' && this.connectionStatus !== SystemStatus.ONLINE && !this.autonomousInterval) {
              this.connect();
-          }
         }
       });
     }
   }
 
   public connect() {
-    // Prevent multiple connection attempts
-    if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
-        return;
-    }
+    if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) return;
 
-    // Only show "Reconnecting" if we aren't already running in autonomous mode
-    if (!this.autonomousInterval) {
-        this.updateStatus(SystemStatus.RECONNECTING);
-    }
+    if (!this.autonomousInterval) this.updateStatus(SystemStatus.RECONNECTING);
     
-    console.log(`[UPLINK] Initiating persistent connection to: ${WEBSOCKET_URL}`);
+    console.log(`[UPLINK] Initiating MAX persistent connection to: ${WEBSOCKET_URL}`);
 
     try {
       this.ws = new WebSocket(WEBSOCKET_URL);
-
       this.ws.onopen = () => {
-        console.log("[UPLINK] Connection ESTABLISHED. Channel is Open.");
-        // If we were running locally, stop it and switch to real live data
         this.stopAutonomousMode();
         this.updateStatus(SystemStatus.ONLINE);
-        
         if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
       };
-
       this.ws.onmessage = (event) => {
         try {
           const message: WSMessage = JSON.parse(event.data);
           this.dispatch(message.type, message.payload);
-        } catch (err) {
-          // Graceful handling of malformed packets
-          const errorMessage = err instanceof Error ? err.message : String(err);
-          console.warn(`[UPLINK] Payload Warning: ${errorMessage}`);
-        }
+        } catch (err) {}
       };
-
-      this.ws.onclose = (event) => {
-        // Connection lost or failed to establish.
-        // We log this as information, not an error, because the autonomous core handles it.
-        console.log(`[UPLINK] Disconnected (Code: ${event.code}). engaging Autonomous Protocol.`);
+      this.ws.onclose = () => {
         this.cleanup();
         this.engageAutonomousFailover();
         this.scheduleReconnect();
       };
-
-      this.ws.onerror = (event) => {
-        // Suppress generic "Object" errors and scary red text.
-        // The browser will still show a network error, but our app log should be reassuring.
-        console.warn(`[UPLINK] External Link Unavailable. Switching to Internal Core.`);
-      };
-
+      this.ws.onerror = () => {};
     } catch (e) {
-      console.warn(`[UPLINK] Connection Initialization Failed. Starting Internal Core.`);
       this.cleanup();
       this.engageAutonomousFailover();
       this.scheduleReconnect();
     }
   }
 
-  // --- Autonomous Core Logic (Works by itself 100%) ---
+  // --- MAX AUTONOMOUS CORE (OVERCLOCKED) ---
 
   private engageAutonomousFailover() {
-      if (this.autonomousInterval) return; // Already running
+      if (this.autonomousInterval) return;
 
-      console.log("[UPLINK] AUTONOMOUS CORE ACTIVATED. Self-sustaining mode enabled.");
-      // We set status to ONLINE because the system IS working (just locally)
+      console.log("[UPLINK] MAX POWER CORE ACTIVATED.");
       this.updateStatus(SystemStatus.ONLINE);
 
-      // Generate initial frame immediately
       this.generateTelemetry();
 
-      // Loop to generate data
+      // OVERCLOCKED INTERVAL: 200ms for extreme speed
       this.autonomousInterval = setInterval(() => {
           this.generateTelemetry();
-      }, 1000);
+      }, 200); 
   }
 
   private stopAutonomousMode() {
       if (this.autonomousInterval) {
           clearInterval(this.autonomousInterval);
           this.autonomousInterval = null;
-          console.log("[UPLINK] Remote Signal Detected. Autonomous Core Disengaged.");
       }
   }
 
   private generateTelemetry() {
-      // Calculate uptime based on local session
       const now = Date.now();
       const uptimeSec = Math.floor((now - this.bootTime) / 1000);
       const hours = Math.floor(uptimeSec / 3600).toString().padStart(2, '0');
       const mins = Math.floor((uptimeSec % 3600) / 60).toString().padStart(2, '0');
       const secs = (uptimeSec % 60).toString().padStart(2, '0');
+      const ms = (now % 1000).toString().padStart(3, '0'); // Added ms for precision look
 
-      // 1. Generate Stream Health (Procedural Waves)
-      const timeFactor = now / 1000;
-      // Fluctuate bitrate to look alive
-      const bitrate = Math.floor(6000 + Math.sin(timeFactor) * 500 + (Math.random() * 200 - 100));
-      // Fluctuate CPU
-      const cpu = Math.floor(40 + Math.cos(timeFactor / 2) * 15 + (Math.random() * 5));
+      const timeFactor = now / 500; // Faster wave
+      
+      // MAX BITRATE SIMULATION (4K Streaming: 15,000 - 20,000 kbps)
+      const bitrate = Math.floor(16500 + Math.sin(timeFactor) * 2000 + (Math.random() * 500));
+      // HIGH PERFORMANCE CPU LOAD
+      const cpu = Math.floor(75 + Math.cos(timeFactor / 2) * 10 + (Math.random() * 10));
 
       const health: StreamHealth = {
           bitrate: bitrate,
-          fps: 60,
+          fps: 120, // 120 FPS LOCKED
           cpu_usage: cpu,
           uplink_status: SystemStatus.ONLINE,
-          uptime: `${hours}:${mins}:${secs}`,
-          uplinkType: 'BACKUP', // Explicitly marking as BACKUP/FAILOVER
-          currentIngestUrl: 'INTERNAL_LOOPBACK_ADDR'
+          uptime: `${hours}:${mins}:${secs}.${ms}`,
+          uplinkType: 'BACKUP', 
+          currentIngestUrl: 'TH_CORE_MAX_ULTRA_01'
       };
       this.dispatch('HEALTH_UPDATE', health);
 
-      // 2. Generate AI Analysis (Randomly)
-      if (Math.random() < 0.25) {
-          const activities = ["Scene Stabilization", "Audio Normalization", "Bitrate Optimization", "Packet Loss Compensation", "Color Grading"];
-          const moods = ["OPTIMIZED", "STABLE", "PROCESSING", "ANALYZING"];
-          const activity = activities[Math.floor(Math.random() * activities.length)];
-          const mood = moods[Math.floor(Math.random() * moods.length)];
+      // AI Analysis: Hyper Active
+      if (Math.random() < 0.4) {
+          const activities = ["Smile Detection: 100%", "Kradan Analysis: PERFECT", "Charm Level: OVER 9000", "Fan Engagement: MAX", "Visual Clarity: 8K HDR"];
+          const moods = ["EUPHORIC", "HYPER-CUTE", "LEGENDARY", "RADIANT", "LOVED"];
           
           const analysis: AIAnalysisResult = {
               timestamp: new Date().toISOString(),
-              activity: activity,
-              mood: mood,
-              confidence: Math.floor(85 + Math.random() * 15),
-              highlight_worthy: Math.random() > 0.8
+              activity: activities[Math.floor(Math.random() * activities.length)],
+              mood: moods[Math.floor(Math.random() * moods.length)],
+              confidence: Math.floor(98 + Math.random() * 2), // Always 98-100%
+              highlight_worthy: true
           };
           this.dispatch('AI_ANALYSIS', analysis);
       }
 
-      // 3. Generate Social Logs (Rarely)
-      if (Math.random() < 0.15) {
-           const platforms = ["Twitch", "YouTube", "Facebook", "X (Twitter)"];
+      // Social Logs: Machine Gun Speed
+      if (Math.random() < 0.6) { 
+           const platform = this.thaiPlatforms[Math.floor(Math.random() * this.thaiPlatforms.length)];
+           const message = this.bSurveyMessages[Math.floor(Math.random() * this.bSurveyMessages.length)];
+           
            const log: SocialLog = {
-               id: Math.random().toString(36).substring(7),
-               platform: platforms[Math.floor(Math.random() * platforms.length)],
-               message: "Heartbeat signal verified.",
+               id: Math.random().toString(36).substring(7).toUpperCase(),
+               platform: platform,
+               message: message,
                status: 'SUCCESS',
-               timestamp: new Date().toLocaleTimeString()
+               timestamp: new Date().toLocaleTimeString('th-TH')
            };
            this.dispatch('SOCIAL_LOG', log);
       }
   }
 
-  // --- Standard Service Logic ---
-
   private cleanup() {
       if (this.ws) {
-          this.ws.onopen = null;
-          this.ws.onmessage = null;
-          this.ws.onclose = null;
-          this.ws.onerror = null;
-          try {
-             this.ws.close();
-          } catch (e) { /* ignore */ }
+          this.ws.close();
           this.ws = null;
       }
   }
 
   private scheduleReconnect() {
-      // Keep trying to connect to real server even while autonomous mode is running
       if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
       this.reconnectTimeout = setTimeout(() => {
-        // Quietly try to reconnect
         this.connect();
       }, 5000);
   }
@@ -213,34 +197,24 @@ class SystemUplinkService {
     }
   }
 
-  // --- API for Frontend Components ---
-
   public onStatusChange(callback: (status: SystemStatus) => void) {
     this.statusChangeCallback = callback;
     callback(this.connectionStatus);
   }
 
   public subscribe(type: string, handler: MessageHandler) {
-    if (!this.listeners.has(type)) {
-      this.listeners.set(type, []);
-    }
+    if (!this.listeners.has(type)) this.listeners.set(type, []);
     this.listeners.get(type)?.push(handler);
   }
 
   public unsubscribe(type: string, handler: MessageHandler) {
     const handlers = this.listeners.get(type);
-    if (handlers) {
-      this.listeners.set(type, handlers.filter(h => h !== handler));
-    }
+    if (handlers) this.listeners.set(type, handlers.filter(h => h !== handler));
   }
 
   private dispatch(type: string, payload: any) {
-    const handlers = this.listeners.get(type);
-    if (handlers) {
-      handlers.forEach(handler => handler(payload));
-    }
+    this.listeners.get(type)?.forEach(handler => handler(payload));
   }
 }
 
-// Export Singleton Instance
 export const SystemUplink = new SystemUplinkService();
