@@ -1,127 +1,99 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, Activity, Wifi, Lock, Globe, Hexagon } from 'lucide-react';
-import StreamMonitor from './components/StreamMonitor';
-import AIAnalysisPanel from './components/AIAnalysisPanel';
-import MetricsCharts from './components/MetricsCharts';
-import SocialLogPanel from './components/SocialLogPanel';
 import { SystemUplink } from './services/SystemUplink';
-import { AIAnalysisResult, StreamHealth, SocialLog, SystemStatus } from './types';
+import { EnterpriseState } from './types';
+import ServerDashboard from './components/ServerDashboard';
+import { ScriptEditor } from './components/ScriptEditor';
+import { Terminal } from './components/Terminal';
+import { NetworkMap } from './components/NetworkMap';
+import { Shield, Radio, Bot, Power } from 'lucide-react';
 
 export function App() {
-  const [systemStatus, setSystemStatus] = useState<SystemStatus>(SystemStatus.OFFLINE);
-  const [streamHealth, setStreamHealth] = useState<StreamHealth>({
-    bitrate: 0, fps: 0, cpu_usage: 0, uplink_status: SystemStatus.OFFLINE, uptime: "00:00:00:000", 
-    uplinkType: 'PRIMARY', currentIngestUrl: 'ESTABLISHING SECURE LINK...'
-  });
-  
-  const [metricsHistory, setMetricsHistory] = useState<StreamHealth[]>([]);
-  const [aiLogs, setAiLogs] = useState<AIAnalysisResult[]>([]);
-  const [socialLogs, setSocialLogs] = useState<SocialLog[]>([]);
+  const [state, setState] = useState<EnterpriseState | null>(null);
 
   useEffect(() => {
-    SystemUplink.onStatusChange(setSystemStatus);
-
-    const handleHealthUpdate = (data: StreamHealth) => {
-      setStreamHealth(data);
-      setMetricsHistory(prev => [...prev.slice(-49), data]); 
-    };
-
-    const handleAIAnalysis = (data: AIAnalysisResult) => {
-      setAiLogs(prev => [...prev.slice(-99), data]); 
-    };
-
-    const handleSocialLog = (data: SocialLog) => {
-      setSocialLogs(prev => [...prev.slice(-200), data]); 
-    };
-
-    SystemUplink.subscribe('HEALTH_UPDATE', handleHealthUpdate);
-    SystemUplink.subscribe('AI_ANALYSIS', handleAIAnalysis);
-    SystemUplink.subscribe('SOCIAL_LOG', handleSocialLog);
-
-    return () => {
-      SystemUplink.unsubscribe('HEALTH_UPDATE', handleHealthUpdate);
-      SystemUplink.unsubscribe('AI_ANALYSIS', handleAIAnalysis);
-      SystemUplink.unsubscribe('SOCIAL_LOG', handleSocialLog);
-    };
+    return SystemUplink.subscribe(setState);
   }, []);
 
+  if (!state) return <div className="h-screen bg-black text-white flex items-center justify-center font-mono">Initializing Sentinel AI...</div>;
+
   return (
-    <div className="min-h-screen bg-[#020202] text-gray-300 font-mono flex flex-col overflow-hidden selection:bg-amber-500 selection:text-black">
+    <div className="h-screen bg-[#050505] text-gray-300 font-sans flex flex-col overflow-hidden">
       
-      {/* GLOBAL BACKGROUND MESH */}
-      <div className="fixed inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
+      {/* TOP NAVIGATION BAR (Kali/Gnome Style) */}
+      <nav className="h-14 bg-[#121212] border-b border-[#2a2a2a] flex items-center justify-between px-4 shrink-0 z-50 shadow-md">
+          <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 font-bold text-white tracking-tight">
+                  <div className={`p-1.5 rounded-sm transition-colors ${state.autonomousMode ? 'bg-purple-600 animate-pulse' : 'bg-gray-700'}`}>
+                      <Shield size={18} className="text-white" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="hidden md:inline leading-tight">KALI ENTERPRISE</span>
+                    <span className="text-[10px] text-gray-500 font-mono leading-tight">SENTINEL EDITION</span>
+                  </div>
+              </div>
 
-      {/* HEADER: SANCTUARY COMMAND */}
-      <header className="h-16 bg-black/90 border-b-2 border-amber-600/50 flex items-center justify-between px-6 sticky top-0 z-50 shadow-[0_5px_30px_rgba(0,0,0,0.8)] backdrop-blur-xl">
-        <div className="flex items-center gap-4">
-            <div className={`p-2.5 border-2 border-amber-500 rounded-xl bg-gradient-to-br from-amber-950 to-black shadow-[0_0_20px_rgba(245,158,11,0.4)]`}>
-                <Hexagon className="text-amber-500 fill-amber-500/20" size={24} strokeWidth={2.5} />
-            </div>
-            <div>
-                <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-pink-500 to-amber-600 leading-none">
-                  BEE<span className="text-gray-100">.SURVEY</span>
-                </h1>
-                <p className="text-[9px] text-amber-500/80 tracking-[0.4em] uppercase mt-1 font-bold flex items-center gap-1">
-                   <Lock size={8}/> ABSOLUTE SANCTUARY MODE
-                </p>
-            </div>
-        </div>
+              {/* AUTONOMOUS TOGGLE */}
+              <div 
+                className={`ml-6 flex items-center gap-2 px-3 py-1 rounded border cursor-pointer select-none transition-all ${state.autonomousMode ? 'bg-purple-900/30 border-purple-500' : 'bg-gray-900 border-gray-700 hover:border-gray-500'}`}
+                onClick={() => SystemUplink.toggleAutonomousMode()}
+              >
+                  <Bot size={16} className={state.autonomousMode ? 'text-purple-400' : 'text-gray-500'} />
+                  <span className={`text-xs font-bold tracking-wider ${state.autonomousMode ? 'text-purple-300' : 'text-gray-500'}`}>
+                      {state.autonomousMode ? 'UNMANNED: ACTIVE' : 'MANUAL CONTROL'}
+                  </span>
+                  {state.autonomousMode && <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                  </span>}
+              </div>
+          </div>
 
-        <div className="flex items-center gap-8">
-            <div className="hidden md:flex flex-col items-end border-r border-gray-800 pr-6">
-                <span className="text-[8px] text-gray-500 font-bold tracking-widest mb-1 uppercase">Defense Level</span>
-                <div className="flex items-center gap-2 text-emerald-500 text-xs font-black tracking-wider drop-shadow-sm">
-                    <ShieldCheck size={12} />
-                    MAXIMUM
-                </div>
-            </div>
+          <div className="flex items-center gap-4 text-xs font-mono text-gray-400">
+              <div className="flex items-center gap-2">
+                  <Radio size={14} className={state.connectionMode === 'REMOTE_SOCKET' ? 'text-green-500 animate-pulse' : 'text-yellow-500'} />
+                  <span className={state.connectionMode === 'REMOTE_SOCKET' ? 'text-green-500' : 'text-yellow-500'}>
+                    {state.connectionMode === 'REMOTE_SOCKET' ? 'UPLINK: ONLINE' : 'LOCAL KERNEL'}
+                  </span>
+              </div>
+              <div className="border-l border-gray-700 pl-4 flex items-center gap-2">
+                  <Power size={12} className={state.autonomousMode ? 'text-purple-500' : 'text-gray-500'}/>
+                  OPERATOR: {state.autonomousMode ? <span className="text-purple-400 font-bold">SENTINEL AI</span> : 'secadmin'}
+              </div>
+          </div>
+      </nav>
 
-            <div className="flex flex-col items-end">
-                <span className="text-[8px] text-gray-500 tracking-wider mb-1 uppercase">Global Status</span>
-                
-                {systemStatus === SystemStatus.SECURE ? (
-                     <div className="flex items-center gap-2 text-amber-100 text-xs font-bold bg-amber-600/20 px-4 py-1.5 rounded-lg border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                        <Globe size={12} className="text-amber-400" />
-                        WORLD_CORE_SECURE
-                     </div>
-                ) : (
-                    <div className="flex items-center gap-2 text-gray-500 text-xs font-bold">
-                        <Activity size={12} className="animate-spin" />
-                        INITIALIZING_DEFENSES...
-                     </div>
-                )}
-            </div>
-        </div>
-      </header>
+      {/* MAIN CONTENT GRID */}
+      <div className="flex-grow p-4 grid grid-cols-12 grid-rows-12 gap-4 overflow-hidden">
+          
+          {/* ROW 1: SERVER STATS (Top) */}
+          <div className="col-span-12 lg:col-span-12 row-span-3">
+              <ServerDashboard hw={state.hardware} />
+          </div>
 
-      {/* Main Content Layout - Organized Grid */}
-      <main className="flex-grow p-5 grid grid-cols-12 gap-5 overflow-hidden max-h-[calc(100vh-64px)] relative z-10">
-        
-        {/* Left Column: Visuals & Metrics (70%) */}
-        <div className="col-span-12 lg:col-span-8 flex flex-col gap-5 h-full overflow-hidden">
-            {/* Live Hardware Feed - The 'Vault' */}
-            <div className="h-[65%] rounded-xl overflow-hidden shadow-2xl">
-                <StreamMonitor health={streamHealth} />
-            </div>
-            {/* System Metrics - The 'Diagnostics' */}
-            <div className="h-[35%]">
-                <MetricsCharts history={metricsHistory} />
-            </div>
-        </div>
+          {/* ROW 2: MAIN WORKSPACE */}
+          
+          {/* Left: Code Editor */}
+          <div className="col-span-12 lg:col-span-6 row-span-5 relative z-10">
+              <ScriptEditor files={state.files} activeFileId={state.activeFileId} />
+          </div>
 
-        {/* Right Column: Intelligence & Logs (30%) */}
-        <div className="col-span-12 lg:col-span-4 flex flex-col gap-5 h-full overflow-hidden">
-            {/* AI Console */}
-            <div className="h-[40%] rounded-xl overflow-hidden shadow-2xl">
-                <AIAnalysisPanel logs={aiLogs} />
-            </div>
-            {/* Social Dispatcher Log */}
-            <div className="h-[60%] rounded-xl overflow-hidden shadow-2xl">
-                <SocialLogPanel logs={socialLogs} />
-            </div>
-        </div>
+          {/* Right: Network Map */}
+          <div className="col-span-12 lg:col-span-6 row-span-5 relative z-10">
+              <NetworkMap hosts={state.hosts} />
+          </div>
 
-      </main>
+          {/* ROW 3: TERMINAL OUTPUT (Bottom) */}
+          <div className="col-span-12 row-span-4">
+              <Terminal lines={state.terminal} />
+          </div>
+
+      </div>
+
+      {/* FOOTER STATUS */}
+      <footer className="h-6 bg-[#0a0a0a] border-t border-[#2a2a2a] flex items-center justify-between px-4 text-[10px] text-gray-500 font-mono">
+          <div>EXT4-FS | RAID10 | ENCRYPTED</div>
+          <div>POWEREDGE R750 | iDRAC 9 Enterprise | {state.autonomousMode ? 'SENTINEL WATCHDOG: MONITORING' : 'IDLE'}</div>
+      </footer>
     </div>
   );
 }

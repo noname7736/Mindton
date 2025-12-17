@@ -1,5 +1,5 @@
 {
-  "name": "Minton Galaxy Command MAX",
-  "description": "Mission Control Dashboard for the Minton Galaxy Stream autonomous broadcasting system. Features persistent state and background synchronization.",
+  "name": "Kali Enterprise Node",
+  "description": "Enterprise-grade Penetration Testing & Scripting Infrastructure. Managed via Web Interface.",
   "requestFramePermissions": []
 }
