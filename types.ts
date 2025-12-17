@@ -1,42 +1,41 @@
 export type ServerStatus = 'OPTIMAL' | 'DEGRADED' | 'CRITICAL' | 'MAINTENANCE';
 
 export interface ServerHardware {
-  model: string; // User Agent / Browser Engine
-  serial: string; // Session ID
-  cpuLoad: number[]; // Real Event Loop Lag calculation
-  ramUsage: number; // Real JS Heap Size (MB)
-  ramTotal: number; // Real JS Heap Limit (MB)
-  raidStatus: string; // Local Storage Status
-  temp: number; // Simulated based on thread activity (Approximation as sensors aren't available in web)
-  fans: number; // N/A for Web
-  power: number; // N/A for Web
-  uptime: number; // Real Performance.now()
+  model: string;
+  serial: string;
+  cpuLoad: number[];
+  ramUsage: number;
+  ramTotal: number;
+  raidStatus: string;
+  temp: number;
+  fans: number;
+  power: number;
+  uptime: number;
 }
 
 export interface TerminalLine {
   id: string;
   timestamp: string;
-  type: 'STDOUT' | 'STDERR' | 'INFO' | 'SUCCESS' | 'INPUT' | 'DAEMON' | 'KERNEL' | 'NET';
+  type: 'STDOUT' | 'STDERR' | 'INFO' | 'SUCCESS' | 'INPUT' | 'DAEMON' | 'KERNEL' | 'NET' | 'EXEC';
   content: string;
 }
 
 export interface ScriptFile {
   id: string;
   name: string;
-  language: 'python' | 'bash' | 'perl' | 'json';
+  language: 'javascript' | 'json' | 'text'; // Changed to JS for real execution
   content: string;
   isDirty?: boolean;
   lastModified: number;
 }
 
-export interface NetworkHost {
-  ip: string;
-  hostname: string;
-  os: string;
-  ports: number[];
-  status: 'UP' | 'DOWN';
-  vulnerabilityScore: number;
-  lastScanned?: number;
+// Changed from NetworkHost to generic ReconNode for Browser Fingerprinting
+export interface ReconNode {
+  id: string;
+  label: string;
+  value: string | number | boolean;
+  category: 'HARDWARE' | 'NETWORK' | 'SOFTWARE' | 'SECURITY';
+  status: 'SAFE' | 'WARN' | 'CRITICAL';
 }
 
 export interface EnterpriseState {
@@ -47,6 +46,6 @@ export interface EnterpriseState {
   terminal: TerminalLine[];
   files: ScriptFile[];
   activeFileId: string;
-  hosts: NetworkHost[];
+  reconData: ReconNode[]; // Real browser data
   activeTasks: number;
 }

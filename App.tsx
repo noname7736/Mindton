@@ -79,7 +79,7 @@ export function App() {
 
           {/* Right: Network Map */}
           <div className="col-span-12 lg:col-span-6 row-span-5 relative z-10">
-              <NetworkMap hosts={state.hosts} />
+              <NetworkMap hosts={state.reconData} />
           </div>
 
           {/* ROW 3: TERMINAL OUTPUT (Bottom) */}
