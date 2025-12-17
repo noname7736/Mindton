@@ -1,7 +1,7 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { AreaChart, Area, ResponsiveContainer, CartesianGrid, YAxis } from 'recharts';
 import { StreamHealth } from '../types';
-import { Activity, Wifi } from 'lucide-react';
+import { HeartPulse, Send } from 'lucide-react';
 
 interface MetricsChartsProps {
   history: StreamHealth[];
@@ -15,17 +15,17 @@ const MetricsCharts: React.FC<MetricsChartsProps> = ({ history }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
       
-      {/* CHART 1: KINETIC FORCE (Motion) */}
-      <div className="bg-black/95 backdrop-blur rounded-sm border border-orange-900/50 p-4 shadow-[0_0_30px_rgba(249,115,22,0.1)] flex flex-col relative overflow-hidden">
+      {/* CHART 1: LONGING INTENSITY */}
+      <div className="bg-black/80 backdrop-blur rounded-lg border border-rose-500/30 p-4 shadow-[0_0_30px_rgba(244,63,94,0.1)] flex flex-col relative overflow-hidden">
         <div className="flex items-center justify-between mb-2 z-30">
             <div className="flex items-center gap-2">
-                <Activity size={18} className="text-orange-500" />
+                <HeartPulse size={18} className="text-rose-500" />
                 <div>
-                    <h3 className="text-xs font-black text-orange-500 tracking-[0.2em]">KINETIC_FORCE</h3>
+                    <h3 className="text-xs font-black text-rose-400 tracking-[0.2em]">LONGING_INTENSITY</h3>
                 </div>
             </div>
-            <span className="text-xl font-mono font-black text-orange-400">
-                {currentMotion.toFixed(2)} G
+            <span className="text-xl font-mono font-black text-rose-500">
+                {(currentMotion * 10).toFixed(0)} BPM
             </span>
         </div>
         
@@ -33,30 +33,30 @@ const MetricsCharts: React.FC<MetricsChartsProps> = ({ history }) => {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
-                <linearGradient id="colorMotion" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
+                <linearGradient id="colorLonging" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#431407" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#881337" vertical={false} opacity={0.3} />
               <YAxis hide domain={[0, 'auto']} />
-              <Area type="monotone" dataKey="motionIntensity" stroke="#f97316" strokeWidth={2} fill="url(#colorMotion)" isAnimationActive={false} />
+              <Area type="monotone" dataKey="motionIntensity" stroke="#f43f5e" strokeWidth={2} fill="url(#colorLonging)" isAnimationActive={false} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* CHART 2: NETWORK FLUX */}
-      <div className="bg-black/95 backdrop-blur rounded-sm border border-blue-900/50 p-4 shadow-[0_0_30px_rgba(59,130,246,0.1)] flex flex-col relative overflow-hidden">
+      {/* CHART 2: THOUGHT PACKETS */}
+      <div className="bg-black/80 backdrop-blur rounded-lg border border-purple-500/30 p-4 shadow-[0_0_30px_rgba(168,85,247,0.1)] flex flex-col relative overflow-hidden">
         <div className="flex items-center justify-between mb-2 z-30">
             <div className="flex items-center gap-2">
-                <Wifi size={18} className="text-blue-500" />
+                <Send size={18} className="text-purple-500" />
                 <div>
-                    <h3 className="text-xs font-black text-blue-500 tracking-[0.2em]">DOWNLINK_FLUX</h3>
+                    <h3 className="text-xs font-black text-purple-400 tracking-[0.2em]">THOUGHTS_SENT</h3>
                 </div>
             </div>
-            <span className="text-xl font-mono font-black text-blue-400">
-                {currentNet} Mbps
+            <span className="text-xl font-mono font-black text-purple-500">
+                {currentNet} Tbps
             </span>
         </div>
         
@@ -64,14 +64,14 @@ const MetricsCharts: React.FC<MetricsChartsProps> = ({ history }) => {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
-                <linearGradient id="colorNet" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                <linearGradient id="colorThoughts" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#a855f7" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e3a8a" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#581c87" vertical={false} opacity={0.3} />
               <YAxis hide domain={[0, 'auto']} />
-              <Area type="step" dataKey="network.downlink" stroke="#3b82f6" strokeWidth={2} fill="url(#colorNet)" isAnimationActive={false} />
+              <Area type="step" dataKey="network.downlink" stroke="#a855f7" strokeWidth={2} fill="url(#colorThoughts)" isAnimationActive={false} />
             </AreaChart>
           </ResponsiveContainer>
         </div>

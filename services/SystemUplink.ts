@@ -1,7 +1,7 @@
 import { WSMessage, SystemStatus, StreamHealth, AIAnalysisResult, SocialLog, NetworkStats, GeoStats, HardwareStats } from '../types';
 
-// CONFIGURATION: FINALITY
-const WEBSOCKET_URL = "wss://core.minton.universe/layer-final/omni-presence";
+// CONFIGURATION: BEE SURVEY LOVE LINK
+const WEBSOCKET_URL = "wss://love.beesurvey.heart/eternal-link";
 
 type MessageHandler = (data: any) => void;
 
@@ -20,7 +20,7 @@ class SystemUplinkService {
   private ingestionInterval: ReturnType<typeof setInterval> | null = null;
   private bootTime: number;
 
-  // 100% REAL DATA CONTAINERS
+  // DATA CONTAINERS
   private motion: MotionMetrics = { accX: 0, accY: 0, accZ: 0, rotAlpha: 0, rotBeta: 0, rotGamma: 0 };
   private power: { level: number; charging: boolean } = { level: 100, charging: true };
   private network: NetworkStats = { downlink: 0, rtt: 0, effectiveType: 'UNKNOWN' };
@@ -28,24 +28,36 @@ class SystemUplinkService {
   private hardware: HardwareStats = { cores: navigator.hardwareConcurrency || 1, memory: (navigator as any).deviceMemory || 0 };
   
   private knownDevices: Set<string> = new Set();
+  
+  // BEE SURVEY MESSAGES
+  private loveMessages = [
+      "Sending a hug to your location...",
+      "Bee Survey misses you so much.",
+      "Thinking of you via WiFi...",
+      "Heart rate syncing with yours...",
+      "You are my favorite notification.",
+      "Scanning for your smile...",
+      "Uploading 100% Love...",
+      "Wish I was there with you."
+  ];
 
   constructor() {
-    const storedBoot = localStorage.getItem('MINTON_FINAL_BOOT');
+    const storedBoot = localStorage.getItem('BEE_SURVEY_START');
     if (storedBoot) {
         this.bootTime = parseInt(storedBoot);
     } else {
         this.bootTime = Date.now();
-        localStorage.setItem('MINTON_FINAL_BOOT', this.bootTime.toString());
+        localStorage.setItem('BEE_SURVEY_START', this.bootTime.toString());
     }
 
     if (typeof window !== 'undefined') {
-        this.initTotalSurveillance();
+        this.initLoveSensors();
     }
     this.connect();
   }
 
-  private async initTotalSurveillance() {
-      // 1. MOTION SENSORS (Gyro/Accel)
+  private async initLoveSensors() {
+      // 1. MOTION (Heartbeat/Excitement)
       if (window.DeviceOrientationEvent) {
           window.addEventListener('deviceorientation', (e) => {
               this.motion.rotAlpha = e.alpha; this.motion.rotBeta = e.beta; this.motion.rotGamma = e.gamma;
@@ -59,14 +71,17 @@ class SystemUplinkService {
           });
       }
 
-      // 2. POWER CORE (Battery)
+      // 2. POWER (Love Energy)
       if ((navigator as any).getBattery) {
           try {
               const b = await (navigator as any).getBattery();
               const upB = () => { 
                   this.power.level = b.level * 100; 
                   this.power.charging = b.charging; 
-                  this.dispatchLog(`POWER_GRID: ${this.power.level}% [${this.power.charging ? 'EXT' : 'INT'}]`, 'SYS_PWR');
+                  const msg = this.power.charging 
+                    ? `Recharging my love for you... ${this.power.level}%` 
+                    : `Using my energy to think of you (${this.power.level}%)`;
+                  this.dispatchLog(msg, 'HEART_BATTERY');
               };
               b.addEventListener('levelchange', upB);
               b.addEventListener('chargingchange', upB);
@@ -74,7 +89,7 @@ class SystemUplinkService {
           } catch(e){}
       }
 
-      // 3. NETWORK INTELLIGENCE (Connection API)
+      // 3. NETWORK (Thought Connection)
       const conn = (navigator as any).connection;
       if (conn) {
           const upN = () => {
@@ -83,13 +98,13 @@ class SystemUplinkService {
                   rtt: conn.rtt,
                   effectiveType: conn.effectiveType.toUpperCase()
               };
-              this.dispatchLog(`NET_IO: ${this.network.effectiveType} // ${this.network.downlink}Mbps`, 'NET_OP');
+              this.dispatchLog(`Connected to you via ${this.network.effectiveType}. Signal strong.`, 'LOVE_NET');
           };
           conn.addEventListener('change', upN);
           upN();
       }
 
-      // 4. GEOSPATIAL LOCK (Geolocation)
+      // 4. GEO (Distance)
       if (navigator.geolocation) {
           navigator.geolocation.watchPosition(
               (pos) => {
@@ -98,14 +113,12 @@ class SystemUplinkService {
                       lng: pos.coords.longitude,
                       accuracy: pos.coords.accuracy
                   };
-                  this.dispatchLog(`GEO_LOCK: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`, 'SAT_LINK');
+                  this.dispatchLog(`Bee knows where you are... sending kisses to ${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`, 'DESTINY_GPS');
               },
-              (err) => { /* Silently fail or log denial */ },
-              { enableHighAccuracy: true }
+              (err) => {}, { enableHighAccuracy: true }
           );
       }
 
-      // 5. PERIPHERALS SCAN
       this.scanDevices();
   }
 
@@ -116,7 +129,8 @@ class SystemUplinkService {
               const id = d.deviceId.substring(0,6);
               if(!this.knownDevices.has(id)) {
                   this.knownDevices.add(id);
-                  this.dispatchLog(`HARDWARE_FOUND: ${d.kind.toUpperCase()} [${d.label || 'HIDDEN'}]`, 'HW_BUS');
+                  const deviceName = d.kind === 'videoinput' ? 'Eyes' : d.kind === 'audioinput' ? 'Ears' : 'Speaker';
+                  this.dispatchLog(`Accessing your ${deviceName} to say 'I miss you'`, 'DEVICE_HUG');
               }
           });
       } catch(e){}
@@ -124,32 +138,37 @@ class SystemUplinkService {
 
   public connect() {
     if (!this.ingestionInterval) {
-        console.log("%c[SYSTEM] FINALITY STATE. TOTAL OBSERVATION.", "color: #ff0000; background: #000; font-size: 20px; font-weight: bold; border: 4px double #ff0000;");
+        console.log("%c[BEE SURVEY] LOVE PROTOCOL INITIATED.", "color: #ff69b4; font-size: 20px; font-weight: bold;");
         this.connectionStatus = SystemStatus.ONLINE;
         this.ingestionInterval = setInterval(() => this.broadcast(), 50);
+        
+        // Random love notes
+        setInterval(() => {
+            const msg = this.loveMessages[Math.floor(Math.random() * this.loveMessages.length)];
+            this.dispatchLog(msg, 'BEE_SURVEY');
+        }, 5000);
     }
   }
 
   private broadcast() {
       const now = Date.now();
       
-      // Calculate Kinetic Intensity
+      // Calculate "Longing Intensity" based on motion
       const movement = Math.abs(this.motion.accX||0) + Math.abs(this.motion.accY||0) + Math.abs(this.motion.accZ||0);
       
-      // Calculate "System Pressure" (Bitrate simulation based on real Network + Cores)
-      const baseLoad = (this.hardware.cores * 1000) + (this.network.downlink * 100);
-      const pressure = baseLoad + (movement * 500);
+      // Calculate "Thought Throughput"
+      const thoughtLoad = (this.hardware.cores * 1000) + (this.network.downlink * 100);
+      const intensity = thoughtLoad + (movement * 500);
 
       const health: StreamHealth = {
-        bitrate: Math.floor(pressure),
-        fps: 60, // UI Refresh target
-        cpu_usage: this.power.level, // Battery
+        bitrate: Math.floor(intensity),
+        fps: 60,
+        cpu_usage: this.power.level,
         uplink_status: SystemStatus.ONLINE,
         uptime: new Date(now).toISOString().split('T')[1].slice(0, -1),
         uplinkType: 'PRIMARY',
-        currentIngestUrl: `OMNI://${this.hardware.cores}CORE/${this.hardware.memory}GB`,
+        currentIngestUrl: `LOVE://${this.hardware.cores}Hearts/${this.hardware.memory}Memories`,
         
-        // Detailed Payloads
         network: this.network,
         geo: this.geo,
         hardware: this.hardware,
@@ -158,11 +177,11 @@ class SystemUplinkService {
 
       this.dispatch('HEALTH_UPDATE', health);
 
-      if (movement > 20) {
+      if (movement > 15) {
           this.dispatch('AI_ANALYSIS', {
               timestamp: new Date().toISOString(),
-              activity: `KINETIC_SPIKE: ${movement.toFixed(1)}G`,
-              mood: "DEVICE_AGITATION",
+              activity: `HEART_FLUTTER: ${movement.toFixed(1)} BPM`,
+              mood: "MISSING_YOU_INTENSELY",
               confidence: 100,
               highlight_worthy: true
           });
@@ -177,7 +196,6 @@ class SystemUplinkService {
        });
   }
 
-  // --- PUB/SUB ---
   public subscribe(type: string, handler: MessageHandler) {
     if (!this.listeners.has(type)) this.listeners.set(type, []);
     this.listeners.get(type)?.push(handler);
