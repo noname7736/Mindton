@@ -11,7 +11,7 @@ export function App() {
   const [systemStatus, setSystemStatus] = useState<SystemStatus>(SystemStatus.OFFLINE);
   const [streamHealth, setStreamHealth] = useState<StreamHealth>({
     bitrate: 0, fps: 0, cpu_usage: 0, uplink_status: SystemStatus.OFFLINE, uptime: "00:00:00:000", 
-    uplinkType: 'PRIMARY', currentIngestUrl: 'Connecting...'
+    uplinkType: 'PRIMARY', currentIngestUrl: 'Initializing...'
   });
   
   const [metricsHistory, setMetricsHistory] = useState<StreamHealth[]>([]);
@@ -46,45 +46,45 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#000000] text-gray-300 font-mono flex flex-col overflow-hidden selection:bg-cyan-900 selection:text-white">
+    <div className="min-h-screen bg-[#050000] text-gray-300 font-mono flex flex-col overflow-hidden selection:bg-red-900 selection:text-white">
       
-      {/* HEADER: REALITY LINK */}
-      <header className="h-16 bg-black border-b border-cyan-900 flex items-center justify-between px-6 sticky top-0 z-50 shadow-[0_10px_60px_rgba(0,255,255,0.1)]">
+      {/* HEADER: DOMINATION MODE */}
+      <header className="h-16 bg-black border-b border-red-900/60 flex items-center justify-between px-6 sticky top-0 z-50 shadow-[0_5px_40px_rgba(220,38,38,0.2)]">
         <div className="flex items-center gap-4">
-            <div className={`p-2 border border-cyan-500 rounded-full bg-black shadow-[0_0_20px_rgba(0,255,255,0.3)]`}>
-                <Infinity className="text-cyan-400 animate-[spin_10s_linear_infinite]" size={24} />
+            <div className={`p-2 border border-red-600 rounded-full bg-black shadow-[0_0_15px_rgba(220,38,38,0.5)]`}>
+                <ShieldAlert className="text-red-500 animate-[pulse_2s_infinite]" size={24} />
             </div>
             <div>
-                <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-white leading-none italic">
-                  MINTON<span className="text-cyan-600">.REALITY</span>
+                <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-100 leading-none italic">
+                  MINTON<span className="text-red-600">.DOMINANCE</span>
                 </h1>
-                <p className="text-[9px] text-cyan-600 tracking-[0.4em] uppercase mt-1 font-black">
-                  HARDWARE_IO // DIRECT_LINK
+                <p className="text-[9px] text-red-600 tracking-[0.4em] uppercase mt-1 font-black">
+                  OMNI-CHANNEL // SEIZED
                 </p>
             </div>
         </div>
 
         <div className="flex items-center gap-8">
-            <div className="hidden md:flex flex-col items-end border-r border-cyan-900/30 pr-6">
-                <span className="text-[8px] text-cyan-800 font-bold tracking-widest mb-1">BRIDGE STATUS</span>
-                <div className="flex items-center gap-2 text-cyan-500 text-xs font-black tracking-wider shadow-cyan-500/10 drop-shadow-sm">
-                    <Cpu size={12} className="text-cyan-400" />
-                    HARDWARE_ACCELERATED
+            <div className="hidden md:flex flex-col items-end border-r border-red-900/30 pr-6">
+                <span className="text-[8px] text-red-800 font-bold tracking-widest mb-1">NETWORK STATUS</span>
+                <div className="flex items-center gap-2 text-red-500 text-xs font-black tracking-wider shadow-red-500/10 drop-shadow-sm">
+                    <Wifi size={12} className="text-red-400" />
+                    TOTAL_CONTROL
                 </div>
             </div>
 
             <div className="flex flex-col items-end">
-                <span className="text-[8px] text-gray-700 tracking-wider mb-1">CONNECTION</span>
+                <span className="text-[8px] text-gray-700 tracking-wider mb-1">TARGET LOCK</span>
                 
                 {systemStatus === SystemStatus.ONLINE ? (
-                     <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold bg-black px-3 py-1 rounded border border-cyan-900">
+                     <div className="flex items-center gap-2 text-red-400 text-xs font-bold bg-black px-3 py-1 rounded border border-red-900">
                         <Globe size={12} />
-                        REALTIME_ACTIVE
+                        GLOBAL_ACTIVE
                      </div>
                 ) : (
                     <div className="flex items-center gap-2 text-gray-500 text-xs font-bold">
                         <AlertTriangle size={12} />
-                        CONNECTING...
+                        ACQUIRING...
                      </div>
                 )}
             </div>
@@ -96,8 +96,8 @@ export function App() {
         
         {/* Left Column: Visuals & Metrics (65%) */}
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-4 h-full overflow-hidden">
-            {/* Live Video Feed */}
-            <div className="h-[60%] shadow-[0_0_60px_rgba(6,182,212,0.1)]">
+            {/* Live Hardware Feed */}
+            <div className="h-[60%] shadow-[0_0_60px_rgba(220,38,38,0.15)]">
                 <StreamMonitor health={streamHealth} />
             </div>
             {/* System Metrics */}
@@ -109,11 +109,11 @@ export function App() {
         {/* Right Column: Intelligence & Logs (35%) */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-4 h-full overflow-hidden">
             {/* AI Console */}
-            <div className="h-[40%] shadow-[0_0_60px_rgba(6,182,212,0.1)]">
+            <div className="h-[40%] shadow-[0_0_60px_rgba(220,38,38,0.15)]">
                 <AIAnalysisPanel logs={aiLogs} />
             </div>
             {/* Social Dispatcher Log */}
-            <div className="h-[60%] shadow-[0_0_60px_rgba(6,182,212,0.1)]">
+            <div className="h-[60%] shadow-[0_0_60px_rgba(220,38,38,0.15)]">
                 <SocialLogPanel logs={socialLogs} />
             </div>
         </div>

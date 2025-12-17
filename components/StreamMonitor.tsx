@@ -1,128 +1,133 @@
 import React, { useEffect, useState } from 'react';
 import { StreamHealth } from '../types';
-import { Monitor, Smartphone, Tablet, Scan, Maximize, Lock, Wifi, Grid, Cast } from 'lucide-react';
+import { Monitor, Smartphone, Tablet, Scan, Maximize, Lock, Wifi, Grid, Cast, Battery, BatteryCharging, Disc, Compass, Zap } from 'lucide-react';
 
 interface StreamMonitorProps {
   health: StreamHealth;
 }
 
 const StreamMonitor: React.FC<StreamMonitorProps> = ({ health }) => {
-  const [screenInfo, setScreenInfo] = useState({ w: 0, h: 0, availW: 0, availH: 0, type: 'UNKNOWN' });
+  const [motion, setMotion] = useState({ alpha: 0, beta: 0, gamma: 0 });
+  const [screenInfo, setScreenInfo] = useState({ w: 0, h: 0, type: 'UNKNOWN' });
 
   useEffect(() => {
-    // Poll window properties for UI updates
-    const update = () => {
+    const handleMotion = (e: DeviceOrientationEvent) => {
+        setMotion({
+            alpha: e.alpha || 0,
+            beta: e.beta || 0,
+            gamma: e.gamma || 0
+        });
+    };
+    window.addEventListener('deviceorientation', handleMotion);
+
+    const updateScreen = () => {
         setScreenInfo({
             w: window.screen.width,
             h: window.screen.height,
-            availW: window.screen.availWidth,
-            availH: window.screen.availHeight,
-            type: navigator.maxTouchPoints > 0 ? 'MOBILE/TABLET' : 'DESKTOP_WS'
+            type: navigator.maxTouchPoints > 0 ? 'MOBILE_NODE' : 'WORKSTATION_NODE'
         });
     };
-    window.addEventListener('resize', update);
-    update();
-    return () => window.removeEventListener('resize', update);
+    window.addEventListener('resize', updateScreen);
+    updateScreen();
+
+    return () => {
+        window.removeEventListener('deviceorientation', handleMotion);
+        window.removeEventListener('resize', updateScreen);
+    };
   }, []);
 
-  // Calculate Aspect Ratio for Visualization
-  const aspectRatio = screenInfo.w / screenInfo.h;
-  const vizWidth = 200;
-  const vizHeight = vizWidth / aspectRatio;
+  // Battery Level is mapped to health.cpu_usage from SystemUplink
+  const batteryLevel = health.cpu_usage; 
+  const isCharging = health.currentIngestUrl.includes('EXT_PWR');
 
   return (
-    <div className="bg-black rounded-sm border-2 border-cyan-900 overflow-hidden flex flex-col h-full relative group shadow-[0_0_80px_rgba(6,182,212,0.15)]">
+    <div className="bg-black rounded-sm border-2 border-red-900/50 overflow-hidden flex flex-col h-full relative group shadow-[0_0_80px_rgba(220,38,38,0.1)]">
       
-      {/* HEADER: TARGET ID */}
-      <div className="bg-cyan-950/20 px-3 py-1 border-b border-cyan-800 flex justify-between items-center z-30 font-mono">
-        <div className="flex items-center gap-2 text-cyan-400">
-            <Scan size={14} className="animate-pulse" />
+      {/* HEADER: DOMINATION STATUS */}
+      <div className="bg-red-950/20 px-3 py-1 border-b border-red-900/50 flex justify-between items-center z-30 font-mono">
+        <div className="flex items-center gap-2 text-red-500">
+            <Zap size={14} className="animate-pulse fill-red-500" />
             <span className="text-[10px] font-black tracking-widest uppercase">
-                TARGET_SCREEN: {screenInfo.type}
+                OMNI_CHANNEL_DOMINANCE
             </span>
         </div>
         <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-ping"></div>
-            <span className="text-[9px] text-cyan-600 font-bold">CAPTURING</span>
+            <div className="w-2 h-2 rounded-full bg-red-600 animate-ping"></div>
+            <span className="text-[9px] text-red-600 font-bold">LIVE_INTERCEPT</span>
         </div>
       </div>
       
-      {/* MAIN VISUALIZATION: SCREEN MIRROR METAPHOR */}
-      <div className="relative flex-grow bg-black flex items-center justify-center overflow-hidden p-8">
+      {/* MAIN DASHBOARD */}
+      <div className="relative flex-grow bg-black flex flex-col p-4 overflow-hidden gap-4">
         
-        {/* Grid Background */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        {/* Background Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(220,38,38,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(220,38,38,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
 
-        {/* The "Captured Screen" Representation */}
-        <div className="relative z-20 flex flex-col items-center justify-center gap-4">
-            
-            {/* Physical Device Frame */}
+        {/* TOP ROW: RESOURCES */}
+        <div className="grid grid-cols-2 gap-4 relative z-20">
+            {/* POWER CORE */}
+            <div className="border border-red-900/30 bg-red-950/10 p-3 flex flex-col gap-2">
+                <div className="flex justify-between items-center text-red-500">
+                    <span className="text-[9px] font-bold">ENERGY_CORE</span>
+                    {isCharging ? <BatteryCharging size={14}/> : <Battery size={14}/>}
+                </div>
+                <div className="h-2 w-full bg-red-900/30 rounded-full overflow-hidden">
+                    <div className="h-full bg-red-600 transition-all duration-500" style={{ width: `${batteryLevel}%` }}></div>
+                </div>
+                <div className="text-right text-[10px] font-mono text-red-400 font-bold">{batteryLevel.toFixed(0)}% CAPACITY</div>
+            </div>
+
+            {/* STORAGE UNIT */}
+            <div className="border border-red-900/30 bg-red-950/10 p-3 flex flex-col gap-2">
+                <div className="flex justify-between items-center text-red-500">
+                    <span className="text-[9px] font-bold">LOCAL_STORAGE</span>
+                    <Disc size={14}/>
+                </div>
+                <div className="flex items-end gap-1 h-2">
+                    {[1,2,3,4,5,6,7,8].map(i => (
+                        <div key={i} className={`flex-1 rounded-sm ${i < 5 ? 'bg-red-600' : 'bg-red-900/30'}`} style={{height: '100%'}}></div>
+                    ))}
+                </div>
+                <div className="text-right text-[10px] font-mono text-red-400 font-bold">MOUNTED_RO</div>
+            </div>
+        </div>
+
+        {/* CENTER: GYROSCOPE VISUALIZER */}
+        <div className="flex-grow relative flex items-center justify-center border border-red-900/20 bg-black/50">
+            <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+                 <div className="w-48 h-48 border border-dashed border-red-500 rounded-full animate-[spin_10s_linear_infinite]"></div>
+            </div>
+
             <div 
-                className="border-2 border-cyan-500 bg-cyan-950/30 relative flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.3)] backdrop-blur-sm transition-all duration-500"
-                style={{ 
-                    width: `${vizWidth}px`, 
-                    height: `${vizHeight}px`,
-                    maxWidth: '100%'
+                className="w-32 h-20 border-2 border-red-500 bg-red-900/20 backdrop-blur flex items-center justify-center shadow-[0_0_30px_rgba(220,38,38,0.4)] transition-transform duration-100 ease-linear transform-gpu"
+                style={{
+                    transform: `perspective(500px) rotateX(${motion.beta}deg) rotateY(${motion.gamma}deg) rotateZ(${motion.alpha}deg)`
                 }}
             >
-                {/* Diagonal Scanlines */}
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,rgba(6,182,212,0.1)_2px,rgba(6,182,212,0.1)_4px)]"></div>
-                
-                {/* Center Info */}
-                <div className="text-center z-10">
-                    <Maximize size={24} className="text-cyan-400 mx-auto mb-2 opacity-80" />
-                    <div className="text-[10px] font-mono text-cyan-300 font-bold bg-black/50 px-2 py-0.5">
-                        {screenInfo.w} x {screenInfo.h}
-                    </div>
-                </div>
-
-                {/* Corners */}
-                <div className="absolute -top-1 -left-1 w-2 h-2 border-t-2 border-l-2 border-cyan-400"></div>
-                <div className="absolute -top-1 -right-1 w-2 h-2 border-t-2 border-r-2 border-cyan-400"></div>
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b-2 border-l-2 border-cyan-400"></div>
-                <div className="absolute -bottom-1 -right-1 w-2 h-2 border-b-2 border-r-2 border-cyan-400"></div>
+                <Compass size={32} className="text-red-400 opacity-80" />
             </div>
 
-            {/* Connection Lines */}
-            <div className="flex gap-8 mt-4 opacity-50">
-                 <div className="flex flex-col items-center gap-1">
-                     <div className="w-px h-8 bg-cyan-800"></div>
-                     <span className="text-[8px] font-mono text-cyan-600">INPUT</span>
-                 </div>
-                 <div className="flex flex-col items-center gap-1">
-                     <div className="w-px h-8 bg-cyan-800"></div>
-                     <span className="text-[8px] font-mono text-cyan-600">VIDEO</span>
-                 </div>
-                 <div className="flex flex-col items-center gap-1">
-                     <div className="w-px h-8 bg-cyan-800"></div>
-                     <span className="text-[8px] font-mono text-cyan-600">AUDIO</span>
-                 </div>
+            <div className="absolute bottom-2 left-2 text-[8px] font-mono text-red-700 space-y-1">
+                <div>ROT_X: {motion.beta.toFixed(1)}°</div>
+                <div>ROT_Y: {motion.gamma.toFixed(1)}°</div>
+                <div>ROT_Z: {motion.alpha.toFixed(1)}°</div>
+            </div>
+            
+            {/* Target Reticle */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-4 h-4 border-l border-t border-red-500 absolute top-1/2 left-1/2 -translate-x-full -translate-y-full"></div>
+                <div className="w-4 h-4 border-r border-t border-red-500 absolute top-1/2 left-1/2 -translate-y-full"></div>
+                <div className="w-4 h-4 border-l border-b border-red-500 absolute top-1/2 left-1/2 -translate-x-full"></div>
+                <div className="w-4 h-4 border-r border-b border-red-500 absolute top-1/2 left-1/2"></div>
             </div>
         </div>
-        
-        {/* Stats Overlay */}
-        <div className="absolute top-4 left-4 space-y-2 z-30">
-             <div className="flex items-center gap-2 text-[9px] text-cyan-500 font-mono">
-                 <Grid size={10} />
-                 <span>PIXEL_DENSITY: {window.devicePixelRatio.toFixed(1)}x</span>
-             </div>
-             <div className="flex items-center gap-2 text-[9px] text-cyan-500 font-mono">
-                 <Cast size={10} />
-                 <span>MIRROR_LATENCY: 0ms</span>
-             </div>
+
+        {/* BOTTOM: DEVICE INFO */}
+        <div className="flex justify-between items-center text-[9px] font-mono text-red-800">
+            <span>DEVICE: {screenInfo.type}</span>
+            <span>RES: {screenInfo.w}x{screenInfo.h}</span>
         </div>
 
-        <div className="absolute bottom-4 right-4 text-right">
-            <div className="text-[9px] font-mono text-cyan-700">DEVICE_FINGERPRINT</div>
-            <div className="text-[8px] font-mono text-cyan-500 w-32 truncate">{navigator.userAgent}</div>
-        </div>
-
-      </div>
-      
-      {/* Footer Status */}
-      <div className="bg-black px-3 py-1 border-t border-cyan-900/50 flex justify-between items-center text-[9px] font-mono text-cyan-600">
-         <span>ACCESS_LEVEL: ROOT / PHYSICAL</span>
-         <span className="flex items-center gap-1 text-cyan-400 animate-pulse"><Wifi size={10}/> SYNCED</span>
       </div>
     </div>
   );

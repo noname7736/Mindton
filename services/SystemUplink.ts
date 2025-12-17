@@ -1,7 +1,7 @@
 import { WSMessage, SystemStatus, StreamHealth, AIAnalysisResult, SocialLog } from '../types';
 
-// CONFIGURATION: OMNI-ACCESS
-const WEBSOCKET_URL = "wss://core.minton.universe/layer-omni/screen-capture";
+// CONFIGURATION: TOTAL DOMINATION
+const WEBSOCKET_URL = "wss://core.minton.universe/layer-root/hardware-seize";
 
 type MessageHandler = (data: any) => void;
 
@@ -14,6 +14,23 @@ interface DeviceMetrics {
     touchPoints: number;
     orientation: string;
     userAgent: string;
+}
+
+interface MotionMetrics {
+    accX: number | null;
+    accY: number | null;
+    accZ: number | null;
+    rotAlpha: number | null;
+    rotBeta: number | null;
+    rotGamma: number | null;
+}
+
+interface BatteryManager extends EventTarget {
+    charging: boolean;
+    chargingTime: number;
+    dischargingTime: number;
+    level: number;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | AddEventListenerOptions): void;
 }
 
 class SystemUplinkService {
@@ -30,27 +47,32 @@ class SystemUplinkService {
       userAgent: 'UNKNOWN'
   };
 
+  private motion: MotionMetrics = {
+      accX: 0, accY: 0, accZ: 0, rotAlpha: 0, rotBeta: 0, rotGamma: 0
+  };
+
+  private power: { level: number; charging: boolean } = { level: 100, charging: true };
+  private storage: { used: number; quota: number } = { used: 0, quota: 0 };
   private knownDevices: Set<string> = new Set();
 
   constructor() {
-    const storedBoot = localStorage.getItem('MINTON_OMNI_BOOT');
+    const storedBoot = localStorage.getItem('MINTON_DOMINATION_BOOT');
     if (storedBoot) {
         this.bootTime = parseInt(storedBoot);
     } else {
         this.bootTime = Date.now();
-        localStorage.setItem('MINTON_OMNI_BOOT', this.bootTime.toString());
+        localStorage.setItem('MINTON_DOMINATION_BOOT', this.bootTime.toString());
     }
 
     if (typeof window !== 'undefined') {
-        this.bindHardwareEvents();
-        this.scanPeripherals(); // Trigger scanner
+        this.initHardwareSeizure();
     }
 
     this.connect();
   }
 
-  private bindHardwareEvents() {
-      // 1. SCREEN CAPTURE BINDING
+  private async initHardwareSeizure() {
+      // 1. DISPLAY & WINDOW
       const updateMetrics = () => {
           this.metrics = {
               screenW: window.screen.width,
@@ -62,83 +84,119 @@ class SystemUplinkService {
               orientation: window.screen.orientation ? window.screen.orientation.type : 'unknown',
               userAgent: navigator.userAgent
           };
-          this.dispatchRealEvent(`SCREEN_SYNC: ${this.metrics.screenW}x${this.metrics.screenH} [DPI:${this.metrics.pixelRatio}]`, 'DISPLAY_IO');
       };
-      
       window.addEventListener('resize', updateMetrics);
-      updateMetrics(); // Init
+      updateMetrics();
 
-      // 2. TOUCH/INPUT BINDING
-      window.addEventListener('touchstart', (e) => {
-          this.dispatchRealEvent(`TOUCH_INPUT: ${e.touches.length} POINTS DETECTED`, 'HAPTIC_IO');
-      });
+      // 2. GYROSCOPE & ACCELEROMETER (Physical Movement)
+      if (window.DeviceOrientationEvent) {
+          window.addEventListener('deviceorientation', (event) => {
+              this.motion.rotAlpha = event.alpha;
+              this.motion.rotBeta = event.beta;
+              this.motion.rotGamma = event.gamma;
+          });
+      }
+      if (window.DeviceMotionEvent) {
+          window.addEventListener('devicemotion', (event) => {
+              this.motion.accX = event.acceleration?.x || 0;
+              this.motion.accY = event.acceleration?.y || 0;
+              this.motion.accZ = event.acceleration?.z || 0;
+          });
+      }
+
+      // 3. BATTERY STATUS (Energy Core)
+      if ((navigator as any).getBattery) {
+          try {
+              const battery = await (navigator as any).getBattery();
+              const updateBattery = () => {
+                  this.power.level = battery.level * 100;
+                  this.power.charging = battery.charging;
+                  this.dispatchRealEvent(`ENERGY_CORE: ${this.power.level}% [${this.power.charging ? 'CHARGING' : 'DRAINING'}]`, 'POWER_GRID');
+              };
+              battery.addEventListener('levelchange', updateBattery);
+              battery.addEventListener('chargingchange', updateBattery);
+              updateBattery();
+          } catch (e) { console.log('Battery Access Denied'); }
+      }
+
+      // 4. STORAGE QUOTA (Territory)
+      if (navigator.storage && navigator.storage.estimate) {
+          const estimate = await navigator.storage.estimate();
+          this.storage.used = estimate.usage || 0;
+          this.storage.quota = estimate.quota || 0;
+          this.dispatchRealEvent(`STORAGE_SEIZED: ${(this.storage.used/1024/1024).toFixed(2)}MB / ${(this.storage.quota/1024/1024/1024).toFixed(2)}GB`, 'DISK_IO');
+      }
+
+      // 5. PERIPHERALS
+      this.scanPeripherals();
   }
 
   private async scanPeripherals() {
-      // 3. ENUMERATE CONNECTED HARDWARE (Real 100%)
       try {
-          // Note: Labels might be empty if permission not granted, but the device ID exists
           const devices = await navigator.mediaDevices.enumerateDevices();
           devices.forEach(d => {
               const id = d.deviceId.substring(0, 8);
               if (!this.knownDevices.has(id)) {
                   this.knownDevices.add(id);
                   let icon = 'UNK';
-                  if (d.kind === 'videoinput') icon = 'CAMERA';
-                  if (d.kind === 'audioinput') icon = 'MIC';
-                  if (d.kind === 'audiooutput') icon = 'SPEAKER';
+                  if (d.kind === 'videoinput') icon = 'OPTIC_SENSOR';
+                  if (d.kind === 'audioinput') icon = 'AUDIO_RECEPTOR';
+                  if (d.kind === 'audiooutput') icon = 'SONIC_EMITTER';
                   
-                  this.dispatchRealEvent(`HARDWARE_ACCESSED: ${icon} [ID:${id}]`, 'PERIPHERAL_BUS');
+                  this.dispatchRealEvent(`PERIPHERAL_LOCKED: ${icon} [ID:${id}]`, 'HARDWARE_BUS');
               }
           });
-      } catch (e) {
-          this.dispatchRealEvent("HARDWARE_SCAN: RESTRICTED MODE", "SECURITY_LAYER");
-      }
+      } catch (e) { /* Ignore permission errors */ }
   }
 
   public connect() {
     if (!this.ingestionInterval) {
-        console.log("%c[SYSTEM] OMNI-ACCESS GRANTED. CONTROLLING ALL SCREENS.", "color: #00ffff; font-weight: 900; font-size: 16px; background: #000; padding: 20px; border: 2px solid #00ffff;");
+        console.log("%c[SYSTEM] DOMINATION MODE ACTIVE. ALL CHANNELS SECURED.", "color: #ff0000; font-weight: 900; font-size: 16px; background: #000; padding: 20px; border: 2px solid #ff0000;");
         this.updateStatus(SystemStatus.ONLINE);
         
-        // Loop for realtime updates
+        // High-frequency monitoring loop
         this.ingestionInterval = setInterval(() => {
-            this.broadcastState();
-        }, 50); // High refresh rate for smooth screen mirroring feel
+            this.broadcastDominance();
+        }, 50); 
     }
   }
 
-  private broadcastState() {
+  private broadcastDominance() {
       const now = Date.now();
-      const uptimeSec = Math.floor((now - this.bootTime) / 1000);
       
-      // Calculate "Control Score" based on access level
-      let controlScore = 0;
-      controlScore += (this.metrics.screenW * this.metrics.screenH); // Resolution = Power
+      // Calculate "Dominance Score"
+      // Combines Screen Area + Battery Power + Motion Intensity
+      let dominance = (this.metrics.screenW * this.metrics.screenH) / 1000;
+      if (this.power.charging) dominance += 500;
       
+      const movement = Math.abs(this.motion.accX || 0) + Math.abs(this.motion.accY || 0) + Math.abs(this.motion.accZ || 0);
+      dominance += (movement * 1000); // Motion spikes the graph
+
       const health: StreamHealth = {
-        bitrate: Math.floor(controlScore / 1000), // "Resolution Bitrate"
-        fps: 60, // Targeting standard refresh
-        cpu_usage: 100,
+        bitrate: Math.floor(dominance), 
+        fps: 60,
+        cpu_usage: this.power.level, // Reuse CPU field for Battery Level visual
         uplink_status: SystemStatus.ONLINE,
         uptime: new Date(now).toISOString().split('T')[1].slice(0, -1),
         uplinkType: 'PRIMARY', 
-        currentIngestUrl: `DISPLAY://${this.metrics.screenW}x${this.metrics.screenH}/${this.metrics.orientation.toUpperCase()}`
+        currentIngestUrl: `OMNI://${this.metrics.orientation}/${this.power.charging ? 'EXT_PWR' : 'INT_BATT'}`
       };
       this.dispatch('HEALTH_UPDATE', health);
 
-      // Analyze Screen Context
-      if (Math.random() < 0.1) {
-          const isMobile = this.metrics.touchPoints > 0;
-          const status = isMobile ? "MOBILE_TARGET_LOCKED" : "DESKTOP_DOMINANCE";
-          
-          this.dispatch('AI_ANALYSIS', {
+      // Analyze Motion Context
+      if (movement > 15) {
+           this.dispatch('AI_ANALYSIS', {
               timestamp: new Date().toISOString(),
-              activity: `VIEWPORT: ${this.metrics.viewportW}x${this.metrics.viewportH}`,
-              mood: status,
-              confidence: 100,
+              activity: `PHYSICAL_SHOCK: ${movement.toFixed(2)} G-FORCE`,
+              mood: "DEVICE_UNSTABLE",
+              confidence: 99.9,
               highlight_worthy: true
           });
+      }
+      
+      // Randomly report dominance events
+      if (Math.random() < 0.05) {
+          this.dispatchRealEvent(`SYNC_PULSE: ${this.metrics.viewportW}x${this.metrics.viewportH} // BATT:${this.power.level}%`, 'HEARTBEAT');
       }
   }
 
