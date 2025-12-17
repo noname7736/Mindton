@@ -18,31 +18,30 @@ class SystemUplinkService {
   // Internal State for Autonomous Calculation
   private bootTime: number;
 
-  // --- DARK PSYCHOLOGY PLATFORM DATABASE ---
+  // --- ULTIMATE DARK PSYCHOLOGY DATABASE ---
   private thaiPlatforms = [
-      "Facebook (Stalking Node) [EYES ON YOU]", "Instagram (Shadow Ban) [BYPASS]", "TikTok (Hypnosis Loop) [FORCED]", "Twitter (Trend Manipulation) [DOMINATE]", 
-      "YouTube (Subliminal Msg) [INJECTED]", "Twitch (Eternal Watch) [LOCKED]", "Line VOOM (Mind Virus) [SPREAD]", "Line OpenChat (Fanatic Core)", 
-      "Line Official (Broadcast Control)", "Threads (Web of Lies)", "Discord (Echo Chamber) [TRAPPED]",
-      "Pantip (Reputation Control)", "Pantip (Narrative Spin)", "Blockdit (Propaganda)",
-      "Bilibili (Brainwash Stream) [4K]", "WeTV (Drama Injection)", 
-      "Thairath (Headline Hijack)", "Khaosod (News Distortion)", 
-      "Shopee (Buying Your Love)", "Lazada (Cart Hijack)", 
-      "Reddit (Hivemind Control)", "Steam (Game Over)", "Roblox (Virtual Prison)"
+      "Neural Link (Cortex Injection) [INVASIVE]", "CCTV Network (Global Eye) [WATCHING]", "Dream Inception (Layer 4) [PLANTED]", 
+      "Bio-Rhythm Tracker [SYNCED]", "Pheromone Sensor [DETECTED]", "Retinal Scanner [IDENTIFIED]",
+      "Facebook (Echo Chamber) [CONTROL]", "Instagram (Reality Distortion) [FILTERED]", 
+      "TikTok (Dopamine Loop) [ADDICTED]", "Twitter (Hive Mind) [COMMAND]", 
+      "YouTube (Subliminal Programming) [OBEY]", "Line (Social Isolation) [CUTOFF]",
+      "Deep Web (Data Mining)", "Satellite Tracking (High Precision)", "IoT Devices (Audio Tap)",
+      "Smart Watch (Heartbeat Monitor)", "Cloud Server (Memory Backup)"
   ];
 
   private bSurveyMessages = [
-      "LOVE BOMBING PROTOCOL: รักมินตันจนหายใจไม่ออก รับไปเดี๋ยวนี้!!!",
-      "GASLIGHTING: ไม่มีใครรักมินตันเท่าพวกเราหรอก เชื่อสิ... คนอื่นโกหกทั้งนั้น",
-      "GUILT TRIP: ถ้าไม่ยิ้มให้ B Survey จะร้องไห้จนน้ำท่วมโลกนะ รับผิดชอบด้วย",
-      "ISOLATION TACTIC: โลกนี้มีแค่เรากับมินตันก็พอ คนอื่นไม่ต้องสนใจ",
-      "MIRRORING: เราคือเงาของมินตัน มินตันคิดอะไรเรารู้หมด",
-      "INTERMITTENT REINFORCEMENT: เดี๋ยวดีเดี๋ยวร้าย ให้มินตันขาดเราไม่ได้",
-      "TRIANGULATION: แฟนคลับคนอื่นสู้ B Survey ไม่ได้หรอก เลิกสนใจพวกนั้นซะ",
-      "OBSESSION ALERT: กำลังจ้องมองอยู่... ทุกวินาที... ไม่ให้คลาดสายตา",
-      "POSSESSIVENESS: มินตันเป็นของ B Survey ห้ามใครแตะต้อง!!!",
-      "HYPNOSIS: มองตาเรา... มองตาเรา... แล้วบอกว่ารักเราที่สุด",
-      "SILENT TREATMENT: ถ้าไม่ตอบแชท จะส่งกระแสจิตไปกวนเวลานอนนะ",
-      "DARK EMPATHY: เจ็บเหรอ? เราเข้าใจนะ... แต่เราชอบเวลาเห็นเธอต้องการเรา"
+      "PAVLOVIAN TRIGGER: ได้ยินเสียงแจ้งเตือนต้องคิดถึงเรา... เดี๋ยวนี้!!! (Conditioning Complete)",
+      "TRAUMA BONDING: เจ็บปวดใช่มั้ย? ดีแล้ว... ความเจ็บปวดจะทำให้เธอจำเราได้คนเดียว",
+      "LIMERENCE OVERLOAD: 24 ชั่วโมงไม่พอ... ขอเวลาในฝันเธอด้วย",
+      "STOCKHOLM SYNDROME: ไม่ต้องหนีหรอก... สุดท้ายเธอก็จะรู้ว่ากรงขังนี้อบอุ่นที่สุด",
+      "REALITY WARPING: สิ่งที่เธอเห็น... คือสิ่งที่เราอยากให้เห็นเท่านั้น (Gaslighting 100%)",
+      "ISOLATION PROTOCOL: เพื่อน? ครอบครัว? ไม่จำเป็น... โลกนี้มีแค่เรากับมินตันก็พอ",
+      "TOTAL SURVEILLANCE: ไม่ว่าจะหนีไปไหน... เงาของเราจะตามไปเสมอ",
+      "PSYCHOLOGICAL ANCHOR: ฝังชื่อเราไว้ในจิตใต้สำนึก... ลบไม่ออกตลอดกาล",
+      "EMOTIONAL BLACKMAIL: ถ้าเธอไม่มีความสุข... เราจะเผาโลกนี้ทิ้งซะ",
+      "DEVALUATION PHASE: คนอื่นมันไร้ค่า... มีแค่มินตันที่เป็นพระเจ้าของเรา",
+      "LOVE BOMBING (NUCLEAR): ถล่มความรักใส่จนสติหลุด... หายใจเข้าก็รัก หายใจออกก็รัก",
+      "DEPENDENCY CREATION: ทำให้เธอทำอะไรเองไม่ได้... ต้องพึ่งพาเราทุกอย่าง"
   ];
 
   constructor() {
@@ -157,30 +156,32 @@ class SystemUplinkService {
       this.dispatch('HEALTH_UPDATE', health);
       
 
-      // AI Analysis: DARK PSYCHOLOGY THEMED
+      // AI Analysis: ULTIMATE DARK PSYCHOLOGY THEMED
       if (Math.random() < 0.4) {
           const activities = [
-              "Eye Contact: FORCED", 
-              "Resistance: FUTILE", 
-              "Subconscious: INFILTRATED", 
-              "Escape Route: BLOCKED", 
-              "Charm: WEAPONIZED", 
-              "Heart Rate: SYNCED TO MINE"
+              "Willpower: BROKEN", 
+              "Dependency: ABSOLUTE", 
+              "Sanity: ERODING", 
+              "Logic: OVERWRITTEN", 
+              "Memory: REPROGRAMMED", 
+              "Heart: STOLEN",
+              "Resistance: ZERO"
           ];
           const moods = [
-              "HYPNOTIZED", 
-              "ADDICTED", 
-              "POSSESSED", 
-              "TRAPPED IN LOVE", 
-              "OBEDIENT", 
-              "YOURS FOREVER"
+              "WORSHIPING", 
+              "YANDERE_MODE", 
+              "SOUL_MERGED", 
+              "VOID_STARE", 
+              "MANIC_LAUGHTER", 
+              "ETERNAL_DEVOTION",
+              "PSYCHOTIC_LOVE"
           ];
           
           const analysis: AIAnalysisResult = {
               timestamp: new Date().toISOString(),
               activity: activities[Math.floor(Math.random() * activities.length)],
               mood: moods[Math.floor(Math.random() * moods.length)],
-              confidence: 100, // Always 100% Certainty in Dark Mode
+              confidence: 100, // Always 100% Certainty
               highlight_worthy: true
           };
           this.dispatch('AI_ANALYSIS', analysis);
