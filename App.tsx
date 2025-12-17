@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Radio, AlertTriangle, Eye, Flame, ShieldAlert } from 'lucide-react';
+import { Radio, AlertTriangle, Eye, Flame, ShieldAlert, Wifi, Globe, Infinity } from 'lucide-react';
 import StreamMonitor from './components/StreamMonitor';
 import AIAnalysisPanel from './components/AIAnalysisPanel';
 import MetricsCharts from './components/MetricsCharts';
@@ -46,45 +46,45 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-gray-300 font-mono flex flex-col overflow-hidden selection:bg-red-900 selection:text-white">
+    <div className="min-h-screen bg-[#000000] text-gray-300 font-mono flex flex-col overflow-hidden selection:bg-red-900 selection:text-white">
       
-      {/* REAL HEADER */}
-      <header className="h-16 bg-black border-b border-red-900/20 flex items-center justify-between px-6 sticky top-0 z-50">
+      {/* HEADER: ABSOLUTE FINALITY */}
+      <header className="h-16 bg-black border-b border-red-950 flex items-center justify-between px-6 sticky top-0 z-50 shadow-[0_10px_60px_rgba(100,0,0,0.4)]">
         <div className="flex items-center gap-4">
-            <div className={`p-2 border border-red-900/50 ${systemStatus === SystemStatus.ONLINE ? 'bg-red-950/20 text-red-500 shadow-[0_0_15px_rgba(255,0,0,0.2)]' : 'bg-gray-900 text-gray-600'}`}>
-                <ShieldAlert className={systemStatus === SystemStatus.ONLINE ? "animate-pulse" : ""} size={24} />
+            <div className={`p-2 border border-red-900 rounded-full bg-black shadow-[0_0_30px_rgba(255,0,0,0.5)]`}>
+                <Infinity className="text-red-600 animate-[spin_5s_linear_infinite]" size={24} />
             </div>
             <div>
-                <h1 className="text-xl font-bold tracking-tighter text-gray-200 leading-none">
-                  MINTON_GALAXY <span className="text-red-600 text-xs align-top px-1 border border-red-600 rounded-sm">CONFIDENTIAL</span>
+                <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-white leading-none italic">
+                  MINTON<span className="text-red-800">.GALAXY</span>
                 </h1>
-                <p className="text-[10px] text-red-700 tracking-[0.2em] uppercase mt-1">
-                  TACTICAL SURVEILLANCE SUITE [LIVE]
+                <p className="text-[9px] text-red-700 tracking-[0.4em] uppercase mt-1 font-black">
+                  PROJECT: DEEP_ABYSS // FINAL_FORM
                 </p>
             </div>
         </div>
 
-        <div className="flex items-center gap-6">
-            <div className="hidden md:flex flex-col items-end border-r border-gray-800 pr-6">
-                <span className="text-[9px] text-gray-600 tracking-widest mb-1">OPERATION SCOPE</span>
-                <div className="flex items-center gap-2 text-red-500 text-xs font-bold tracking-wider">
-                    <Flame size={12} className="fill-red-900" />
-                    THAILAND_SECTOR_ACTIVE
+        <div className="flex items-center gap-8">
+            <div className="hidden md:flex flex-col items-end border-r border-red-900/30 pr-6">
+                <span className="text-[8px] text-red-900 font-bold tracking-widest mb-1">TARGET CONDITION</span>
+                <div className="flex items-center gap-2 text-red-500 text-xs font-black tracking-wider shadow-red-500/10 drop-shadow-sm">
+                    <ShieldAlert size={12} className="fill-red-950 animate-pulse" />
+                    IRREVERSIBLE_LOVE
                 </div>
             </div>
 
             <div className="flex flex-col items-end">
-                <span className="text-[9px] text-gray-600 tracking-wider mb-1">SYSTEM STATE</span>
+                <span className="text-[8px] text-gray-700 tracking-wider mb-1">REALITY STATUS</span>
                 
                 {systemStatus === SystemStatus.ONLINE ? (
-                     <div className="flex items-center gap-2 text-red-500 text-xs font-bold animate-pulse">
-                        <Radio size={12} />
-                        CONNECTED
+                     <div className="flex items-center gap-2 text-red-600 text-xs font-bold bg-black px-3 py-1 rounded border border-red-900">
+                        <Globe size={12} />
+                        ALL_SYSTEMS_OWNED
                      </div>
                 ) : (
                     <div className="flex items-center gap-2 text-gray-500 text-xs font-bold">
                         <AlertTriangle size={12} />
-                        RETRYING...
+                        INITIALIZING...
                      </div>
                 )}
             </div>
@@ -97,7 +97,7 @@ export function App() {
         {/* Left Column: Visuals & Metrics (65%) */}
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-4 h-full overflow-hidden">
             {/* Live Video Feed */}
-            <div className="h-[60%]">
+            <div className="h-[60%] shadow-[0_0_60px_rgba(220,38,38,0.1)]">
                 <StreamMonitor health={streamHealth} />
             </div>
             {/* System Metrics */}
@@ -109,11 +109,11 @@ export function App() {
         {/* Right Column: Intelligence & Logs (35%) */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-4 h-full overflow-hidden">
             {/* AI Console */}
-            <div className="h-[40%]">
+            <div className="h-[40%] shadow-[0_0_60px_rgba(147,51,234,0.1)]">
                 <AIAnalysisPanel logs={aiLogs} />
             </div>
             {/* Social Dispatcher Log */}
-            <div className="h-[60%]">
+            <div className="h-[60%] shadow-[0_0_60px_rgba(59,130,246,0.1)]">
                 <SocialLogPanel logs={socialLogs} />
             </div>
         </div>

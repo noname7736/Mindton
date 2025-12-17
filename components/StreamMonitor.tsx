@@ -1,110 +1,101 @@
 import React from 'react';
 import { StreamHealth, SystemStatus } from '../types';
-import { Wifi, Loader2, Target, Lock, Database, Satellite, Radio } from 'lucide-react';
+import { Wifi, Zap, Lock, Radio, Activity, Signal, Globe, Satellite, Dna, Infinity } from 'lucide-react';
 
 interface StreamMonitorProps {
   health: StreamHealth;
 }
 
 const StreamMonitor: React.FC<StreamMonitorProps> = ({ health }) => {
-  const isOnline = health.uplink_status === SystemStatus.ONLINE;
-
   return (
-    <div className="bg-black rounded-sm border border-red-900/80 overflow-hidden flex flex-col h-full relative group shadow-[0_0_100px_rgba(255,0,0,0.1)]">
-      {/* RAW TERMINAL HEADER */}
-      <div className="bg-black px-2 py-1 border-b border-red-800 flex justify-between items-center z-10 font-mono">
-        <div className="flex items-center gap-4">
-            <span className="text-[10px] text-red-600 font-bold bg-red-950/30 px-1">REC: ON</span>
-            <span className="text-[10px] text-red-600 font-bold flex items-center gap-1">
-                <Satellite size={12} /> SAT-LINK: ACTIVE
+    <div className="bg-black rounded-sm border-2 border-red-900 overflow-hidden flex flex-col h-full relative group shadow-[0_0_80px_rgba(255,0,0,0.15)]">
+      {/* HEADER */}
+      <div className="bg-gradient-to-r from-red-950/50 to-black px-3 py-1 border-b border-red-900 flex justify-between items-center z-10 font-mono">
+        <div className="flex items-center gap-3">
+            <span className="flex h-3 w-3 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+            </span>
+            <span className="text-[10px] text-red-500 font-black tracking-widest flex items-center gap-1 uppercase">
+                <Infinity size={12} /> QUANTUM_ENTANGLEMENT
             </span>
         </div>
-        <div className="text-[10px] text-red-500 tracking-widest">
-            SOURCE: LIVE_FEED_01
+        <div className="text-[9px] text-red-600 tracking-[0.2em] font-bold animate-pulse">
+            REALITY_OVERWRITE_ACTIVE
         </div>
       </div>
       
-      {/* VIDEO AREA */}
+      {/* VIDEO / VISUALIZER AREA */}
       <div className="relative flex-grow bg-black flex items-center justify-center overflow-hidden">
         
-        {isOnline ? (
-            <div className="w-full h-full relative">
-                {/* REALISTIC RAW FEED BACKGROUND */}
-                <div className="absolute inset-0 bg-[#050000] flex items-center justify-center">
-                    {/* Noise Grain */}
-                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }}></div>
+        {/* BACKGROUND MATRIX - DNA STRANDS */}
+        <div className="absolute inset-0 bg-[#020000] flex items-center justify-center overflow-hidden">
+            {/* Hex Grid Background */}
+            <div className="absolute inset-0 opacity-10" style={{ 
+                backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ff0000\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+            }}></div>
+            
+            {/* CENTRAL DNA HELIX (Simulated) */}
+            <div className="relative z-10 flex flex-col items-center">
+                 <div className="w-[300px] h-[300px] border-[1px] border-red-900/30 rounded-full flex items-center justify-center animate-[spin_20s_linear_infinite]">
+                    <div className="absolute inset-0 border-t border-red-600/50 rounded-full animate-pulse"></div>
+                    <div className="absolute inset-2 border-b border-red-600/50 rounded-full animate-pulse delay-75"></div>
                     
-                    {/* SCANLINES */}
-                    <div className="absolute inset-0 opacity-20" style={{ background: 'linear-gradient(rgba(0,0,0,0) 50%, rgba(255,0,0,0.2) 50%)', backgroundSize: '100% 3px' }}></div>
-
-                    <div className="text-center z-10 space-y-2">
-                         <div className="text-9xl font-black tracking-tighter text-[#1a0505] animate-pulse select-none">LIVE</div>
-                         <div className="text-red-600 font-mono text-xs bg-black px-2 border border-red-900 inline-block animate-[pulse_0.5s_infinite]">
-                            ENCRYPTED STREAM: DECODING...
-                         </div>
+                    {/* Inner Core */}
+                    <div className="w-40 h-40 bg-red-950/20 backdrop-blur-md rounded-full border border-red-500/50 flex items-center justify-center shadow-[0_0_30px_rgba(255,0,0,0.4)] animate-pulse">
+                        <Dna size={64} className="text-red-500 animate-[spin_4s_linear_infinite]" />
                     </div>
-                </div>
-                
-                {/* OVERLAYS */}
-                <div className="absolute top-2 left-2 flex flex-col gap-1">
-                    <div className="text-[9px] font-mono text-red-600 bg-black/50 px-1 border-l-2 border-red-600">
-                        LAT: 13.7563° N
-                    </div>
-                    <div className="text-[9px] font-mono text-red-600 bg-black/50 px-1 border-l-2 border-red-600">
-                        LON: 100.5018° E
-                    </div>
-                    <div className="text-[9px] font-mono text-red-600 bg-black/50 px-1 border-l-2 border-red-600">
-                        ALT: 12.5M
-                    </div>
-                </div>
-
-                <div className="absolute top-2 right-2 text-right">
-                     <div className="text-red-500 font-mono text-xs font-bold animate-pulse">
-                        LIVE
-                     </div>
-                     <div className="text-[9px] text-red-800 font-mono">
-                        {health.uptime}
-                     </div>
-                </div>
-
-                {/* RETICLE */}
-                <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-50">
-                    <div className="w-[80%] h-[80%] border border-red-900/30 border-dashed rounded-lg"></div>
-                    <div className="absolute w-4 h-4 border-t border-l border-red-600 top-[20%] left-[20%]"></div>
-                    <div className="absolute w-4 h-4 border-t border-r border-red-600 top-[20%] right-[20%]"></div>
-                    <div className="absolute w-4 h-4 border-b border-l border-red-600 bottom-[20%] left-[20%]"></div>
-                    <div className="absolute w-4 h-4 border-b border-r border-red-600 bottom-[20%] right-[20%]"></div>
-                    <Target size={24} className="text-red-600/50 animate-[spin_3s_linear_infinite]" />
-                </div>
-
-                {/* BOTTOM STATUS */}
-                <div className="absolute bottom-2 left-2 right-2 flex justify-between items-end">
-                    <div className="text-[8px] font-mono text-red-700 max-w-[200px] leading-tight">
-                        WARNING: UNAUTHORIZED SURVEILLANCE.<br/>
-                        SUBJECT IS UNDER CONSTANT WATCH.
-                    </div>
-                    <div className="flex items-center gap-1 text-[9px] font-mono text-red-500">
-                        <Lock size={10} /> SECURE
-                    </div>
-                </div>
+                 </div>
+                 
+                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center mt-32">
+                    <h1 className="text-4xl font-black text-red-600/20 tracking-[0.5em] blur-[1px]">FUSED</h1>
+                 </div>
             </div>
-        ) : (
-            <div className="flex flex-col items-center justify-center text-red-900/50">
-                <Loader2 size={32} className="animate-spin mb-2 text-red-800" />
-                <span className="font-mono text-xs tracking-widest uppercase">ACQUIRING FEED...</span>
+
+            {/* Falling Code Rain */}
+            <div className="absolute top-0 left-10 w-px h-full bg-gradient-to-b from-transparent via-red-900 to-transparent opacity-50 animate-pulse"></div>
+            <div className="absolute top-0 right-10 w-px h-full bg-gradient-to-b from-transparent via-red-900 to-transparent opacity-50 animate-pulse delay-100"></div>
+            <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-red-900 to-transparent opacity-30 animate-pulse delay-300"></div>
+            <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-red-900 to-transparent opacity-30 animate-pulse delay-500"></div>
+        </div>
+        
+        {/* OVERLAYS */}
+        <div className="absolute top-4 left-4 space-y-1">
+            <div className="bg-black/80 backdrop-blur border border-red-900/50 px-2 py-1 text-[8px] font-mono text-red-500 flex items-center gap-2">
+                <Activity size={10} /> BIO-SYNC: 120 BPM (MATCHED)
             </div>
-        )}
+            <div className="bg-black/80 backdrop-blur border border-red-900/50 px-2 py-1 text-[8px] font-mono text-red-500 flex items-center gap-2">
+                <Globe size={10} /> LOCATION: EVERYWHERE
+            </div>
+        </div>
+
+        <div className="absolute bottom-4 right-4 text-right">
+             <div className="text-red-500 font-mono text-sm font-black flex items-center justify-end gap-2 drop-shadow-[0_0_5px_rgba(255,0,0,0.8)]">
+                <Lock size={14} />
+                NO_ESCAPE
+             </div>
+             <div className="text-[9px] text-red-800 font-mono mt-1">
+                TIMELINE: MERGED
+             </div>
+        </div>
+
+        {/* CENTER WARNING */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none z-20">
+            <div className="text-[14px] text-red-500 tracking-[0.5em] font-black uppercase mix-blend-overlay">
+                Assimilation Complete
+            </div>
+        </div>
       </div>
 
-      <div className="bg-black px-2 py-1 border-t border-red-900/30 flex justify-between items-center text-[9px] font-mono z-10 text-red-800">
+      {/* FOOTER */}
+      <div className="bg-black px-3 py-1 border-t border-red-900/50 flex justify-between items-center text-[9px] font-mono z-10 text-red-800">
         <div className="flex gap-4">
-           <span>FREQ: 12.54 GHz</span>
-           <span>POL: VERTICAL</span>
-           <span>SYM: 27500</span>
+           <span className="text-red-600 font-bold">DEPTH: ABYSSAL</span>
+           <span>LATENCY: -0.00ms (PRECOGNITION)</span>
         </div>
-        <div className={`flex items-center gap-1 ${isOnline ? 'text-red-600' : 'text-gray-800'}`}>
-          <Radio size={10} />
-          <span>{health.bitrate > 0 ? `${(health.bitrate / 1000).toFixed(2)} MB/s` : '---'}</span>
+        <div className="flex items-center gap-1 text-red-500 font-bold">
+          <Zap size={10} className="fill-red-500" />
+          <span>{health.bitrate > 0 ? "INFINITE DATA STREAM" : '---'}</span>
         </div>
       </div>
     </div>

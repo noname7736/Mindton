@@ -1,6 +1,6 @@
 import React from 'react';
 import { SocialLog } from '../types';
-import { Server, Shield, Database } from 'lucide-react';
+import { Server, Shield, Database, Lock } from 'lucide-react';
 
 interface SocialLogPanelProps {
   logs: SocialLog[];
@@ -13,11 +13,11 @@ const SocialLogPanel: React.FC<SocialLogPanelProps> = ({ logs }) => {
         <div className="flex items-center gap-2 text-gray-400">
           <Database size={14} className="text-blue-500" />
           <span className="font-bold text-[10px] uppercase text-blue-500">
-            INTERCEPTION LOGS
+            OMNI-LOGS
           </span>
         </div>
-        <div className="text-[9px] text-gray-600 flex items-center gap-1">
-          <Shield size={10} /> ROOT_ACCESS
+        <div className="text-[9px] text-blue-900 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 flex items-center gap-1">
+          <Lock size={8} /> RECORD_IS_PERMANENT
         </div>
       </div>
       
@@ -25,24 +25,24 @@ const SocialLogPanel: React.FC<SocialLogPanelProps> = ({ logs }) => {
         <table className="w-full text-left border-collapse">
             <thead className="bg-galaxy-900 text-[9px] uppercase text-gray-600 sticky top-0 z-10">
                 <tr>
-                    <th className="px-3 py-1 w-24 border-b border-galaxy-800">Time (UTC)</th>
-                    <th className="px-3 py-1 w-32 border-b border-galaxy-800">Source / Node IP</th>
-                    <th className="px-3 py-1 border-b border-galaxy-800">Command / Payload</th>
-                    <th className="px-3 py-1 w-16 border-b border-galaxy-800 text-right">Stat</th>
+                    <th className="px-3 py-1 w-20 border-b border-galaxy-800">T-Minus</th>
+                    <th className="px-3 py-1 w-32 border-b border-galaxy-800">Vector / Node</th>
+                    <th className="px-3 py-1 border-b border-galaxy-800">Injection Payload</th>
+                    <th className="px-3 py-1 w-16 border-b border-galaxy-800 text-right">State</th>
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-900">
                 {logs.slice().reverse().map((log) => (
-                    <tr key={log.id} className="hover:bg-blue-900/10 transition-colors">
-                        <td className="px-3 py-1 text-gray-500 text-[9px]">{log.timestamp}</td>
-                        <td className="px-3 py-1 text-blue-400 text-[9px] truncate max-w-[120px]">
+                    <tr key={log.id} className="hover:bg-blue-900/10 transition-colors group">
+                        <td className="px-3 py-1 text-gray-600 text-[9px]">{log.timestamp}</td>
+                        <td className="px-3 py-1 text-blue-400 text-[9px] truncate max-w-[120px] font-bold">
                             {log.platform}
                         </td>
-                        <td className="px-3 py-1 text-gray-300 text-[9px] truncate max-w-[200px]">
-                            <span className="text-blue-900 mr-1">$</span>{log.message}
+                        <td className="px-3 py-1 text-gray-400 text-[9px] truncate max-w-[200px] group-hover:text-blue-200">
+                            {log.message}
                         </td>
                         <td className="px-3 py-1 text-right">
-                             <span className="text-[8px] text-green-500 font-bold">200 OK</span>
+                             <span className="text-[8px] text-blue-500 font-bold tracking-tighter">LOCKED</span>
                         </td>
                     </tr>
                 ))}

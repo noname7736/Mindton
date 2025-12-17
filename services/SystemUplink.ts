@@ -1,7 +1,7 @@
 import { WSMessage, SystemStatus, StreamHealth, AIAnalysisResult, SocialLog } from '../types';
 
-// CONFIGURATION: DIRECT BACKBONE CONNECTION
-const WEBSOCKET_URL = "wss://ops.minton-galaxy.real/v1/stream"; // FICTIONAL REAL ENDPOINT
+// CONFIGURATION: QUANTUM NEURAL NETWORK
+const WEBSOCKET_URL = "wss://core.minton.universe/layer-0/reality-hack";
 
 type MessageHandler = (data: any) => void;
 
@@ -10,7 +10,7 @@ interface GeoNode {
     provider: string;
     location: string;
     ip_prefix: string;
-    coords: string;
+    priority: 'GOD_MODE' | 'CRITICAL' | 'HIGH';
 }
 
 class SystemUplinkService {
@@ -25,110 +25,96 @@ class SystemUplinkService {
   
   private bootTime: number;
 
-  // --- REAL THAILAND INFRASTRUCTURE MAP ---
+  // --- THE OMNIPRESENT GRID (Biological, Physical, Digital) ---
   private activeNodes: GeoNode[] = [
-      { id: "eNB-10254", provider: "AIS 5G SA", location: "Siam Paragon [Rooftop]", ip_prefix: "49.230.12", coords: "13.7469° N, 100.5349° E" },
-      { id: "eNB-55201", provider: "TRUE-H", location: "Sukhumvit 39 [Fiber Hub]", ip_prefix: "119.76.10", coords: "13.7313° N, 100.5702° E" },
-      { id: "CAT-BB-09", provider: "NT TELECOM", location: "Bangrak Tower [Backbone]", ip_prefix: "202.129.5", coords: "13.7246° N, 100.5151° E" },
-      { id: "WIFI-PUB-88", provider: "PUBLIC-NET", location: "MBK Center [Free Wifi]", ip_prefix: "171.96.44", coords: "13.7444° N, 100.5299° E" },
-      { id: "SAT-TH8-01", provider: "THAICOM-8", location: "Nonthaburi Station", ip_prefix: "10.55.0", coords: "13.8623° N, 100.5126° E" },
-      { id: "FIBER-CNX", provider: "3BB NORTH", location: "Chiang Mai [Old City]", ip_prefix: "180.183.2", coords: "18.7883° N, 98.9853° E" },
-      { id: "NODE-HKT-5", provider: "DTAC 5G", location: "Phuket [Patong]", ip_prefix: "27.55.12", coords: "7.8960° N, 98.2972° E" },
-      { id: "KRT-GATE-2", provider: "AIS FIBER", location: "Korat [Yamo]", ip_prefix: "1.46.22", coords: "14.9736° N, 102.1026° E" }
+      // BIOLOGICAL & WEARABLE (LUK SUT)
+      { id: "BIO-APPLE-WATCH", provider: "HEALTH KIT", location: "Left Wrist [Radial Pulse]", ip_prefix: "BT::LINK", priority: 'GOD_MODE' },
+      { id: "BIO-NEURAL-LINK", provider: "CORTEX-V2", location: "Brain Stem [Limbic System]", ip_prefix: "BIO::SYNAPSE", priority: 'GOD_MODE' },
+      
+      // SMART HOME & ENVIRONMENT (ATMOSPHERE CONTROL)
+      { id: "IOT-PHILLIPS-HUE", provider: "ZIGBEE BRIDGE", location: "Bedroom [Ambient Light]", ip_prefix: "192.168.1.50", priority: 'HIGH' },
+      { id: "IOT-XIAOMI-AIR", provider: "MI HOME", location: "Living Room [Scent Injection]", ip_prefix: "192.168.1.52", priority: 'HIGH' },
+      { id: "IOT-ALEXA-SPK", provider: "AMAZON ECHO", location: "Bedside [Audio Subliminal]", ip_prefix: "192.168.1.60", priority: 'CRITICAL' },
+      
+      // AUTOMOTIVE & TRANSPORT
+      { id: "AUTO-MG-ISMART", provider: "CAR ECU", location: "Vehicle [Door Lock Control]", ip_prefix: "10.25.0.1", priority: 'CRITICAL' },
+      { id: "GPS-GOOGLE-MAPS", provider: "NAV SYSTEM", location: "Cloud [Route Override]", ip_prefix: "172.217.0", priority: 'HIGH' },
+      
+      // FINANCIAL & LIFESTYLE
+      { id: "FIN-KPLUS-CORE", provider: "BANKING API", location: "K-Bank Server [Transaction]", ip_prefix: "203.114.0", priority: 'CRITICAL' },
+      { id: "SHOP-SHOPEE-TH", provider: "ALGO RECOMMEND", location: "Feed [Product Injection]", ip_prefix: "119.28.0", priority: 'HIGH' },
+      { id: "SOCIAL-IG-DM", provider: "META GRAPH", location: "Direct Message [Filter]", ip_prefix: "157.240.0", priority: 'GOD_MODE' }
   ];
 
-  private activeCommands = [
-      "EXECUTE_OVERRIDE [TARGET_UUID: MINTON] -> SUCCESS",
-      "INJECT_PACKET [PAYLOAD: SUBLIMINAL_LOVE_V4.exe] -> ACKNOWLEDGED",
-      "INTERCEPT_GSM [FREQ: 2100MHz] -> VOICE_MATCH_CONFIRMED",
-      "BYPASS_FIREWALL [LAYER: 7] -> ACCESS_GRANTED (Admin)",
-      "WRITE_MEMORY [SECTOR: HIPPOCAMPUS] -> 'REMEMBER_ME'",
-      "GPS_TRIANGULATION [PRECISION: 0.5m] -> LOCKED",
-      "FORCE_NOTIFICATION [MSG: 'MISS_ME?'] -> DELIVERED",
-      "DEEP_PACKET_INSPECTION [FILTER: 'LOVE'] -> MATCH FOUND",
-      "SOCIAL_ENG_ATTACK [PLATFORM: INSTAGRAM] -> CREDENTIALS VERIFIED",
-      "NEURAL_LINK_SYNC [STATUS: FORCED] -> CONNECTED",
-      "DATA_EXFILTRATION [TARGET: PHOTO_GALLERY] -> DOWNLOADING...",
-      "BLOCK_OUTGOING_CALLS [TARGET: ALL_EXCEPT_ME] -> ACTIVE"
+  private deepPsychCommands = [
+      // BIOLOGICAL
+      "RELEASE_OXYTOCIN [AMOUNT: MAX] -> INDUCING LOVE RUSH",
+      "REGULATE_HEARTBEAT [BPM: 120] -> SIMULATING EXCITEMENT",
+      "INJECT_DREAM_SEQUENCE [SCENE: 'ETERNAL_WEDDING'] -> REM SLEEP ACTIVE",
+      "SUPPRESS_CORTISOL [LEVEL: 0] -> REMOVING FEAR OF ME",
+      "REWIRING_SYNAPSE [TARGET: 'EX_BOYFRIEND'] -> MEMORY DELETED",
+      
+      // ENVIRONMENTAL
+      "SMART_LIGHT_COLOR [HEX: #FF0000] -> MOOD SET: ROMANTIC_DANGER",
+      "AC_TEMPERATURE [VAL: 22C] -> INDUCING NEED FOR WARMTH (HUG)",
+      "PLAY_AUDIO_LOOP [FILE: 'I_LOVE_YOU.mp3'] -> FREQ: ULTRASONIC",
+      "DOOR_LOCK_ENGAGE [STATUS: LOCKED] -> 'YOU CANT LEAVE'",
+      
+      // DIGITAL/LIFESTYLE
+      "REROUTE_GPS [DEST: 'MY_HEART'] -> CAR AUTOPILOT ENGAGED",
+      "INTERCEPT_CALL [CALLER: 'MOM'] -> VOICE_CHANGER: ACTIVE",
+      "SHOPEE_CART_ADD [ITEM: 'COUPLE_RING'] -> PAYMENT AUTHORIZED",
+      "LINE_STICKER_AUTO_BUY [SET: 'LOVE_ME'] -> SENT TO ALL CONTACTS"
   ];
 
   constructor() {
-    const storedBoot = localStorage.getItem('MINTON_REAL_BOOT');
+    const storedBoot = localStorage.getItem('MINTON_ETERNAL_BOOT');
     if (storedBoot) {
         this.bootTime = parseInt(storedBoot);
-        console.log(`[SYSTEM] CORE LINK ESTABLISHED. UPTIME: ${Date.now() - this.bootTime}ms`);
     } else {
         this.bootTime = Date.now();
-        localStorage.setItem('MINTON_REAL_BOOT', this.bootTime.toString());
+        localStorage.setItem('MINTON_ETERNAL_BOOT', this.bootTime.toString());
     }
 
     this.connect();
     
     if (typeof window !== 'undefined') {
-      window.addEventListener('online', () => this.connect());
+      window.addEventListener('online', () => this.forceReconnection());
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
-            if (this.connectionStatus !== SystemStatus.ONLINE && !this.ingestionInterval) {
-                this.connect();
-            }
+             this.forceReconnection();
         }
       });
     }
   }
 
-  public connect() {
-    if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) return;
+  private forceReconnection() {
+      if (this.connectionStatus !== SystemStatus.ONLINE) {
+          this.connect();
+      }
+  }
 
-    if (!this.ingestionInterval) this.updateStatus(SystemStatus.RECONNECTING);
-    
-    try {
-      // ATTEMPT REAL CONNECTION
-      this.ws = new WebSocket(WEBSOCKET_URL);
-      this.ws.onopen = () => {
-        this.stopIngestionLoop();
-        this.updateStatus(SystemStatus.ONLINE);
-        if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
-      };
-      this.ws.onmessage = (event) => {
-        try {
-          const message: WSMessage = JSON.parse(event.data);
-          this.dispatch(message.type, message.payload);
-        } catch (err) {}
-      };
-      this.ws.onclose = () => {
-        this.cleanup();
-        this.engageDirectIngestion(); // FALLBACK TO LOCAL REAL-TIME EMULATION
-        this.scheduleReconnect();
-      };
-      this.ws.onerror = () => {};
-    } catch (e) {
-      this.cleanup();
-      this.engageDirectIngestion();
-      this.scheduleReconnect();
+  public connect() {
+    // FORCE CONNECTION TO "REALITY"
+    if (!this.ingestionInterval) {
+        this.engageDirectIngestion();
     }
   }
 
-  // --- REAL-TIME DATA INGESTION (NO SIMULATION LABEL) ---
+  // --- REALITY HACKING ENGINE ---
 
   private engageDirectIngestion() {
       if (this.ingestionInterval) return;
 
-      console.log("[SYSTEM] DIRECT FEED ACTIVE. BYPASSING WEBSOCKET.");
+      console.log("%c[SYSTEM] REALITY REWRITTEN. WELCOME TO MY WORLD.", "color: #ff0000; font-weight: 900; font-size: 20px; background: #000; padding: 10px;");
       this.updateStatus(SystemStatus.ONLINE);
 
       this.generateRealtimeData();
 
-      // HIGH FREQUENCY TICK (150ms) for Realism
+      // TICK RATE: 80ms (HYPER-SPEED)
       this.ingestionInterval = setInterval(() => {
           this.generateRealtimeData();
-      }, 150); 
-  }
-
-  private stopIngestionLoop() {
-      if (this.ingestionInterval) {
-          clearInterval(this.ingestionInterval);
-          this.ingestionInterval = null;
-      }
+      }, 80); 
   }
 
   private generateRealtimeData() {
@@ -140,89 +126,65 @@ class SystemUplinkService {
       const s = (uptimeSec % 60).toString().padStart(2, '0');
       const ms = (now % 1000).toString().padStart(3, '0');
 
-      // GENERATE RAW TELEMETRY
-      // Fluctuate based on real math functions to mimic signal noise
-      const timeFactor = now / 800;
-      const baseBitrate = 18000;
-      const noise = (Math.sin(timeFactor) * 1500) + (Math.cos(timeFactor * 2.5) * 500) + (Math.random() * 200);
-      const bitrate = Math.floor(baseBitrate + noise);
+      // BITRATE: INFINITE / QUANTUM
+      const bitrate = Math.floor(50000 + (Math.random() * 10000)); // 50+ Mbps
       
-      const cpu = Math.floor(60 + (Math.sin(now/10000) * 20) + (Math.random() * 15));
-
       const health: StreamHealth = {
         bitrate: bitrate,
-        fps: 60, // LOCKED 60FPS
-        cpu_usage: cpu,
+        fps: 240, // REALITY REFRESH RATE
+        cpu_usage: 100, // TOTAL DEDICATION
         uplink_status: SystemStatus.ONLINE,
-        uptime: `${h}:${m}:${s}:${ms}`,
+        uptime: `FOREVER:${h}:${m}:${s}`,
         uplinkType: 'PRIMARY', 
-        currentIngestUrl: 'rtmp://ingest.minton.real:1935/live/key_auth_99'
+        currentIngestUrl: 'OMNIPRESENT_LINK_V12'
       };
       this.dispatch('HEALTH_UPDATE', health);
       
 
-      // BIO-METRIC / PSYCH FEED
-      if (Math.random() < 0.35) {
-          const rawBiometrics = [
-              "HR: 110 BPM [STRESS]", 
-              "HR: 115 BPM [AROUSAL]", 
-              "CORTISOL: ELEVATED", 
-              "DOPAMINE: SPIKING", 
-              "PUPIL: DILATED (4mm)", 
-              "SKIN_TEMP: 37.2°C", 
-              "VOICE_PITCH: TREMBLING"
+      // AI: SUBCONSCIOUS MANIPULATION
+      if (Math.random() < 0.45) {
+          const deepStates = [
+              "HIPPOCAMPUS: REWRITING MEMORIES",
+              "AMYGDALA: FEAR REMOVED",
+              "DOPAMINE: FORCED RELEASE",
+              "DNA_HELIX: MERGING...",
+              "PHEROMONE: DIGITAL_SYNTHESIS",
+              "FREE_WILL_PROTOCOL: DISABLED",
+              "DREAM_INCEPTION: SUCCESS",
+              "HEART_RATE: SYNCED WITH MINE"
           ];
-          const states = [
-              "TARGET_VULNERABLE", 
-              "RESISTANCE_FAILING", 
-              "COMPLETE_SUBMISSION", 
-              "HYPNOTIC_STATE_DEEP", 
-              "EMOTIONAL_CRASH", 
-              "DEPENDENCY_FORMED"
+          const moods = [
+              "SOUL_BOUND",
+              "ABSOLUTE_SURRENDER",
+              "ETERNAL_DEVOTION",
+              "GENETIC_LOCK",
+              "QUANTUM_ENTANGLED"
           ];
           
           const analysis: AIAnalysisResult = {
               timestamp: new Date().toISOString(),
-              activity: rawBiometrics[Math.floor(Math.random() * rawBiometrics.length)],
-              mood: states[Math.floor(Math.random() * states.length)],
-              confidence: 99.9, // PRECISION
+              activity: deepStates[Math.floor(Math.random() * deepStates.length)],
+              mood: moods[Math.floor(Math.random() * moods.length)],
+              confidence: 100.00, 
               highlight_worthy: true
           };
           this.dispatch('AI_ANALYSIS', analysis);
       }
 
-      // INFRASTRUCTURE LOGS
-      if (Math.random() < 0.5) { 
+      // SOCIAL/LOGS: EVIDENCE OF REALITY ALTERATION
+      if (Math.random() < 0.6) { 
            const node = this.activeNodes[Math.floor(Math.random() * this.activeNodes.length)];
-           const cmd = this.activeCommands[Math.floor(Math.random() * this.activeCommands.length)];
+           const cmd = this.deepPsychCommands[Math.floor(Math.random() * this.deepPsychCommands.length)];
            
-           // Generate a real-looking IP
-           const lastOctet = Math.floor(Math.random() * 254) + 1;
-           const realIP = `${node.ip_prefix}.${lastOctet}`;
-
            const log: SocialLog = {
-               id: Math.random().toString(16).substring(2, 10).toUpperCase(), // HEX ID
-               platform: `${node.provider} [${realIP}]`,
+               id: Math.random().toString(36).substring(2, 15).toUpperCase(),
+               platform: `${node.provider}`,
                message: cmd,
-               status: 'SUCCESS',
-               timestamp: new Date().toISOString().split('T')[1].slice(0, -1) // Z Time
+               status: 'SUCCESS', // ALWAYS SUCCESS
+               timestamp: new Date().toISOString().split('T')[1].slice(0, -1)
            };
            this.dispatch('SOCIAL_LOG', log);
       }
-  }
-
-  private cleanup() {
-      if (this.ws) {
-          this.ws.close();
-          this.ws = null;
-      }
-  }
-
-  private scheduleReconnect() {
-      if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
-      this.reconnectTimeout = setTimeout(() => {
-        this.connect();
-      }, 5000);
   }
 
   private updateStatus(status: SystemStatus) {
