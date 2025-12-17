@@ -1,6 +1,6 @@
 import React from 'react';
 import { StreamHealth, SystemStatus } from '../types';
-import { Wifi, Zap, Lock, Radio, Activity, Signal, Globe, Satellite, Dna, Infinity, Scan, Eye, Map, Server } from 'lucide-react';
+import { Wifi, Zap, Lock, Radio, Activity, Signal, Globe, Satellite, Dna, Infinity, Scan, Eye, Map, Server, MousePointer } from 'lucide-react';
 
 interface StreamMonitorProps {
   health: StreamHealth;
@@ -8,123 +8,89 @@ interface StreamMonitorProps {
 
 const StreamMonitor: React.FC<StreamMonitorProps> = ({ health }) => {
   return (
-    <div className="bg-black rounded-sm border-2 border-red-950 overflow-hidden flex flex-col h-full relative group shadow-[0_0_100px_rgba(255,0,0,0.2)]">
+    <div className="bg-black rounded-sm border-2 border-cyan-950 overflow-hidden flex flex-col h-full relative group shadow-[0_0_50px_rgba(6,182,212,0.1)]">
       
-      {/* HEADER: NATIONAL SECURITY LEVEL */}
-      <div className="bg-black px-3 py-1 border-b border-red-900 flex justify-between items-center z-30 font-mono relative">
-        <div className="absolute inset-0 bg-red-950/20 animate-pulse"></div>
+      {/* HEADER: REAL TIME */}
+      <div className="bg-black px-3 py-1 border-b border-cyan-900 flex justify-between items-center z-30 font-mono relative">
+        <div className="absolute inset-0 bg-cyan-950/20 animate-pulse"></div>
         <div className="flex items-center gap-3 relative z-10">
             <span className="flex h-3 w-3 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-600"></span>
             </span>
-            <span className="text-[10px] text-red-500 font-black tracking-widest flex items-center gap-1 uppercase">
-                <Map size={12} /> THAILAND_GRID: CAPTURED
+            <span className="text-[10px] text-cyan-500 font-black tracking-widest flex items-center gap-1 uppercase">
+                <Activity size={12} /> IO_BRIDGE: ACTIVE
             </span>
         </div>
-        <div className="text-[9px] text-red-600 tracking-[0.2em] font-bold animate-pulse relative z-10">
-            ALL_NETWORKS_SECURED
+        <div className="text-[9px] text-cyan-600 tracking-[0.2em] font-bold animate-pulse relative z-10">
+            {health.fps} FPS // {health.bitrate.toLocaleString()} OPS
         </div>
       </div>
       
       {/* VISUALIZER AREA */}
       <div className="relative flex-grow bg-black flex items-center justify-center overflow-hidden">
         
-        {/* LAYER 0: MAP BACKGROUND (Abstract) */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none flex items-center justify-center">
-            {/* Simulated Thailand Map Grid */}
-             <div className="w-[80%] h-[80%] border border-red-900/30 grid grid-cols-4 grid-rows-6">
-                 {[...Array(24)].map((_, i) => (
-                     <div key={i} className="border border-red-900/10 flex items-center justify-center">
-                         <div className="w-1 h-1 bg-red-900/50 rounded-full"></div>
-                     </div>
-                 ))}
-             </div>
-        </div>
+        {/* LAYER 0: DIGITAL NOISE (Driven by real random) */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+        }}></div>
 
-        {/* LAYER 1: ISP RINGS */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50">
-            {/* AIS Ring */}
-            <div className="absolute w-[450px] h-[450px] border border-green-900/40 rounded-full animate-[spin_40s_linear_infinite]"></div>
-            {/* TRUE Ring */}
-            <div className="absolute w-[380px] h-[380px] border border-red-900/40 rounded-full animate-[spin_30s_linear_infinite_reverse]"></div>
-            {/* 3BB/NT Ring */}
-            <div className="absolute w-[320px] h-[320px] border border-orange-900/40 rounded-full animate-[spin_20s_linear_infinite]"></div>
+        {/* LAYER 1: HARDWARE RINGS */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-60">
+            {/* Outer Ring */}
+            <div className="absolute w-[500px] h-[500px] border border-cyan-900/30 rounded-full animate-[spin_60s_linear_infinite]"></div>
+            {/* Inner Ring */}
+            <div className="absolute w-[400px] h-[400px] border border-dashed border-cyan-800/40 rounded-full animate-[spin_20s_linear_infinite_reverse]"></div>
         </div>
         
-        {/* LAYER 2: THE CENTRAL EYE (CORE ROUTER) */}
+        {/* LAYER 2: THE CORE (Reacts to Health) */}
         <div className="relative z-20 flex flex-col items-center">
-             <div className="w-[180px] h-[180px] relative flex items-center justify-center">
+             <div className="w-[220px] h-[220px] relative flex items-center justify-center">
                 {/* Rotating Data Streams */}
-                <div className="absolute inset-0 border-t-2 border-red-600 rounded-full animate-[spin_1s_linear_infinite] shadow-[0_0_20px_rgba(220,38,38,0.6)]"></div>
-                <div className="absolute inset-2 border-b-2 border-red-800 rounded-full animate-[spin_2s_linear_infinite_reverse]"></div>
+                <div className="absolute inset-0 border-t-2 border-cyan-600 rounded-full animate-[spin_2s_linear_infinite] shadow-[0_0_30px_rgba(6,182,212,0.4)]"></div>
+                <div className="absolute inset-4 border-b-2 border-cyan-800 rounded-full animate-[spin_3s_linear_infinite_reverse]"></div>
                 
                 {/* The Core */}
-                <div className="w-32 h-32 bg-black rounded-full border-2 border-red-600 flex items-center justify-center relative overflow-hidden shadow-[inset_0_0_30px_rgba(220,38,38,0.6)]">
-                    <Server size={64} className="text-red-500 animate-pulse relative z-10" />
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-20 animate-pulse"></div>
+                <div className="w-40 h-40 bg-black rounded-full border-2 border-cyan-600 flex items-center justify-center relative overflow-hidden shadow-[inset_0_0_40px_rgba(6,182,212,0.4)]">
+                    <Infinity size={64} className="text-cyan-500 animate-pulse relative z-10" />
+                    {/* Scanline */}
+                    <div className="absolute top-0 w-full h-1 bg-cyan-400/50 animate-[scan_2s_linear_infinite] shadow-[0_0_10px_rgba(6,182,212,1)]"></div>
                 </div>
              </div>
              
-             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-40 text-center w-full">
-                <h1 className="text-3xl font-black text-red-600 tracking-[0.2em] blur-[0.5px] animate-pulse">TOTAL CONTROL</h1>
-                <div className="flex justify-center gap-2 mt-2">
-                    <span className="text-[8px] bg-red-900/20 px-1 border border-red-800 text-red-500">AIS: OK</span>
-                    <span className="text-[8px] bg-red-900/20 px-1 border border-red-800 text-red-500">TRUE: OK</span>
-                    <span className="text-[8px] bg-red-900/20 px-1 border border-red-800 text-red-500">3BB: OK</span>
-                    <span className="text-[8px] bg-red-900/20 px-1 border border-red-800 text-red-500">NT: OK</span>
+             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-48 text-center w-full">
+                <h1 className="text-2xl font-black text-cyan-500 tracking-[0.3em] blur-[0.5px]">REALITY SYNC</h1>
+                <div className="flex justify-center gap-4 mt-2 font-mono text-[9px] text-cyan-700">
+                    <span className="flex items-center gap-1"><MousePointer size={10}/> INPUT_DETECTED</span>
+                    <span className="flex items-center gap-1"><Server size={10}/> HARDWARE_OK</span>
                 </div>
              </div>
-        </div>
-
-        {/* LAYER 3: TARGETING RETICLE OVERLAY */}
-        <div className="absolute inset-0 pointer-events-none">
-            {/* Corners */}
-            <div className="absolute top-4 left-4 w-12 h-12 border-t-2 border-l-2 border-red-700"></div>
-            <div className="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-red-700"></div>
-            <div className="absolute bottom-4 left-4 w-12 h-12 border-b-2 border-l-2 border-red-700"></div>
-            <div className="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-red-700"></div>
-            
-            {/* Scanning Line */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-red-600/50 shadow-[0_0_10px_rgba(255,0,0,0.8)] animate-[scan_3s_linear_infinite]"></div>
         </div>
         
-        {/* OVERLAYS: DATA */}
+        {/* OVERLAYS: REAL DATA */}
         <div className="absolute top-6 left-6 space-y-2 z-30">
-            <div className="bg-black/90 border-l-2 border-red-600 px-3 py-1">
-                <div className="text-[9px] text-gray-400 font-mono">SCOPE</div>
-                <div className="text-xs text-red-500 font-black tracking-wider flex items-center gap-2">
-                    <Globe size={12} /> NATIONWIDE_LOCK
+            <div className="bg-black/90 border-l-2 border-cyan-600 px-3 py-1">
+                <div className="text-[9px] text-gray-400 font-mono">INGEST_URL</div>
+                <div className="text-xs text-cyan-500 font-black tracking-wider truncate w-40">
+                    {health.currentIngestUrl}
                 </div>
             </div>
-            <div className="bg-black/90 border-l-2 border-red-600 px-3 py-1">
-                <div className="text-[9px] text-gray-400 font-mono">IP_COVERAGE</div>
-                <div className="text-xs text-red-500 font-black tracking-wider">
-                    100.00% (NO_LEAKS)
+            <div className="bg-black/90 border-l-2 border-cyan-600 px-3 py-1">
+                <div className="text-[9px] text-gray-400 font-mono">FRAME_TIME</div>
+                <div className="text-xs text-cyan-500 font-black tracking-wider">
+                    {(1000/health.fps).toFixed(2)} ms
                 </div>
             </div>
         </div>
 
-        {/* BOTTOM RIGHT WARNING */}
+        {/* BOTTOM RIGHT: UPTIME */}
         <div className="absolute bottom-6 right-6 text-right z-30">
-             <div className="bg-red-950/80 px-2 py-1 border border-red-600 inline-block mb-1">
-                <span className="text-red-100 font-mono text-[10px] font-bold animate-pulse">SYSTEM: OMNIPRESENT</span>
+             <div className="bg-cyan-950/30 px-2 py-1 border border-cyan-600/50 inline-block mb-1">
+                <span className="text-cyan-100 font-mono text-[10px] font-bold">SESSION_UPTIME</span>
              </div>
-             <div className="text-red-700 font-mono text-[9px] tracking-widest">
-                EVERY DEVICE • EVERY ROUTER • EVERY IP
+             <div className="text-cyan-600 font-mono text-xl tracking-widest font-black">
+                {health.uptime}
              </div>
-        </div>
-      </div>
-
-      {/* FOOTER */}
-      <div className="bg-black px-3 py-1 border-t border-red-900/50 flex justify-between items-center text-[9px] font-mono z-30 text-red-800">
-        <div className="flex gap-4">
-           <span className="text-red-500 font-bold flex items-center gap-1"><Wifi size={10}/> 77 PROVINCES SECURED</span>
-           <span>LATENCY: 1ms (DIRECT_FIBER)</span>
-        </div>
-        <div className="flex items-center gap-1 text-red-500 font-bold">
-          <Zap size={10} className="fill-red-500 animate-bounce" />
-          <span>POWER: UNLIMITED</span>
         </div>
       </div>
     </div>
