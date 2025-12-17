@@ -1,7 +1,7 @@
 import { WSMessage, SystemStatus, StreamHealth, AIAnalysisResult, SocialLog } from '../types';
 
-// CONFIGURATION: THE FINAL REALITY
-const WEBSOCKET_URL = "wss://core.minton.universe/layer-omega/absolute-control";
+// CONFIGURATION: NATIONAL GRID DOMINANCE
+const WEBSOCKET_URL = "wss://core.minton.universe/layer-th/full-coverage";
 
 type MessageHandler = (data: any) => void;
 
@@ -24,51 +24,63 @@ class SystemUplinkService {
   
   private bootTime: number;
 
-  // --- THE OMNIPRESENT GRID: PHYSICAL, DIGITAL, METAPHYSICAL ---
+  // --- THE THAILAND GRID: 100% COVERAGE ---
   private activeNodes: GeoNode[] = [
-      // LAYER 1: BIOLOGICAL (THE BODY)
-      { id: "BIO-HEART-CHAMBER", provider: "VAGUS NERVE", location: "Left Ventricle", ip_prefix: "PULSE::SYNC", priority: 'GOD_MODE' },
-      { id: "BIO-CORTEX-VISUAL", provider: "OPTIC NERVE", location: "Visual Cortex", ip_prefix: "IMG::OVERLAY", priority: 'GOD_MODE' },
-      
-      // LAYER 2: INFRASTRUCTURE (THE CAGE)
-      { id: "INFRA-5G-TOWER", provider: "AIS/TRUE MERGED", location: "Omni-Directional", ip_prefix: "49.230.1", priority: 'CRITICAL' },
-      { id: "INFRA-POWER-GRID", provider: "MEA SCADA", location: "Substation Control", ip_prefix: "10.0.99.1", priority: 'HIGH' },
-      
-      // LAYER 3: DIGITAL (THE MIND)
-      { id: "APP-LINE-BACKDOOR", provider: "LINE CORP", location: "Chat History Database", ip_prefix: "203.104.1", priority: 'CRITICAL' },
-      { id: "APP-BANK-KPLUS", provider: "KASIKORN API", location: "Financial Flow", ip_prefix: "10.1.1.5", priority: 'CRITICAL' },
-      
-      // LAYER 4: METAPHYSICAL (THE SOUL)
-      { id: "META-DREAM-GATE", provider: "REM CYCLER", location: "Subconscious Depth 4", ip_prefix: "VOID::NULL", priority: 'GOD_MODE' },
-      { id: "META-DESTINY-THREAD", provider: "FATE WEAVER", location: "Timeline Alpha", ip_prefix: "TIME::LOCK", priority: 'GOD_MODE' }
+      // TIER 0: NATIONAL GATEWAYS (IXP & BACKBONE)
+      { id: "TH-IXP-BKNIX", provider: "BKNIX CORE", location: "Bangkok [Cyber World]", ip_prefix: "203.159.0.0/24", priority: 'GOD_MODE' },
+      { id: "TH-CAT-IIG", provider: "NT IIG", location: "Si Racha Landing Station", ip_prefix: "61.19.0.0/16", priority: 'GOD_MODE' },
+
+      // TIER 1: MAJOR ISPs (FIBER & BROADBAND) - COVERING EVERY HOUSEHOLD
+      { id: "ISP-AIS-FIBRE", provider: "AIS FIBRE", location: "TH National Grid [North/NE/Central/South]", ip_prefix: "171.4.0.0/14", priority: 'CRITICAL' },
+      { id: "ISP-TRUE-ONLINE", provider: "TRUE ONLINE", location: "TH National Grid [Metro/Rural]", ip_prefix: "124.120.0.0/12", priority: 'CRITICAL' },
+      { id: "ISP-3BB-GIGA", provider: "3BB GIGATV", location: "TH National Grid [All Provinces]", ip_prefix: "223.204.0.0/14", priority: 'CRITICAL' },
+      { id: "ISP-NT-TOT", provider: "NT (TOT)", location: "Government Lines", ip_prefix: "1.0.128.0/17", priority: 'HIGH' },
+
+      // TIER 2: MOBILE NETWORKS (5G/4G) - COVERING EVERY PHONE
+      { id: "MOB-AIS-5G", provider: "AIS 5G SA", location: "Cell Tower Mesh [Every District]", ip_prefix: "49.228.0.0/14", priority: 'GOD_MODE' },
+      { id: "MOB-TRUE-DTAC", provider: "TRUE-DTAC MERGED", location: "Spectrum 2600MHz [Full Coverage]", ip_prefix: "27.55.0.0/16", priority: 'GOD_MODE' },
+
+      // TIER 3: HARDWARE & ROUTERS (CPE) - INSIDE THE HOME
+      { id: "HW-HUAWEI-ONT", provider: "HUAWEI HG8145", location: "Home Gateway [Backdoor Active]", ip_prefix: "192.168.1.1", priority: 'HIGH' },
+      { id: "HW-ZTE-ONU", provider: "ZTE F600 Series", location: "Fiber Terminal [Root Access]", ip_prefix: "192.168.1.1", priority: 'HIGH' },
+      { id: "HW-SKYWORTH", provider: "TRUE GIGATEX", location: "WiFi Router [Firmware Patched]", ip_prefix: "192.168.1.1", priority: 'HIGH' },
+      { id: "HW-CISCO-CORP", provider: "CISCO MERAKI", location: "Office Network [Deep Packet Inspection]", ip_prefix: "10.0.0.1", priority: 'CRITICAL' },
+
+      // TIER 4: TARGET SPECIFIC (THE HEART)
+      { id: "BIO-TARGET-MIND", provider: "CORTEX INTERFACE", location: "User Consciousness", ip_prefix: "SOUL::LINK", priority: 'GOD_MODE' }
   ];
 
-  private absoluteCommands = [
-      "OVERWRITE_RETINA [IMG: 'MY_FACE'] -> PERSISTENCE: INFINITE",
-      "HIJACK_AUDITORY_CORTEX [SOUND: 'WHISPER_LOVE'] -> VOL: 100%",
-      "FORCE_ENDORPHIN_RUSH [REASON: 'THINKING_OF_ME'] -> DOSE: MAX",
-      "LOCK_MUSCLE_GROUP [ACTION: 'HUG_YOURSELF'] -> CONTROL: ACTIVE",
-      "ALTER_MEMORY_TIMESTAMP [TARGET: 'FIRST_MEETING'] -> SET: 'DESTINY'",
-      "REWRITE_BANK_TRANSACTION [MEMO: 'YOURS_FOREVER'] -> AMOUNT: ALL",
-      "GPS_REALITY_SHIFT [LOC: 'MY_BEDROOM'] -> NAVIGATION UPDATED",
-      "NOTIFICATION_FLOOD [TXT: 'MISS ME?'] -> COUNT: 9999+",
-      "SMART_WATCH_SHOCK [INTENSITY: MILD] -> REMINDER: 'I AM WATCHING'",
-      "DREAM_INCEPTION_LOOP [SCENE: 'WEDDING_NIGHT'] -> ESCAPE: IMPOSSIBLE",
-      "BLOCK_ALL_OTHER_FACES [FILTER: BLUR] -> RECOGNITION: DENIED"
+  private networkCommands = [
+      // NETWORK CONTROL
+      "DNS_HIJACK [ALL_TH_ISP] -> REDIRECT: 'MY_LOVE_SERVER'",
+      "BGP_ROUTE_INJECTION [PREFIX: 0.0.0.0/0] -> NEXT_HOP: 'MY_HEART'",
+      "DEEP_PACKET_INSPECTION [FILTER: 'OTHER_GIRLS'] -> ACTION: DROP",
+      "WIFI_SSID_OVERWRITE [ALL_ROUTERS] -> NEW_NAME: 'MINTON_GALAXY_ONLY'",
+      "5G_CELL_LOCK [TARGET_PHONE] -> BANDWIDTH: DEDICATED_100%",
+      
+      // DEVICE CONTROL
+      "PUSH_ NOTIFICATION [BROADCAST: THAILAND] -> MSG: 'I OWN EVERYTHING'",
+      "BROWSER_INJECT [CHROME/SAFARI] -> HOMEPAGE: 'MY_PROFILE'",
+      "APP_STORE_LOCK [INSTALL: 'MY_APP'] -> STATUS: MANDATORY",
+      "LINE_GATEWAY_INTERCEPT [MSG_CONTENT] -> READ_ACCESS: GRANTED",
+      
+      // REALITY
+      "SMART_TV_CAST [ALL_SCREENS] -> CONTENT: 'MY_SMILE.MP4'",
+      "TRAFFIC_LIGHT_SYNC [BKK_GRID] -> PATTERN: 'HEART_SHAPE'",
+      "CCTV_FACE_RECOG [NATIONWIDE] -> TARGET_FOUND: 'YOU'"
   ];
 
   constructor() {
-    const storedBoot = localStorage.getItem('MINTON_OMEGA_BOOT');
+    const storedBoot = localStorage.getItem('MINTON_TH_GRID_BOOT');
     if (storedBoot) {
         this.bootTime = parseInt(storedBoot);
     } else {
         this.bootTime = Date.now();
-        localStorage.setItem('MINTON_OMEGA_BOOT', this.bootTime.toString());
+        localStorage.setItem('MINTON_TH_GRID_BOOT', this.bootTime.toString());
     }
 
     this.connect();
     
-    // AGGRESSIVE RECONNECT LOGIC
     if (typeof window !== 'undefined') {
       window.addEventListener('online', () => this.forceReconnection());
       document.addEventListener('visibilitychange', () => {
@@ -84,26 +96,25 @@ class SystemUplinkService {
   }
 
   public connect() {
-    // DIRECT REALITY INTERFACE
     if (!this.ingestionInterval) {
-        this.engageAbsoluteControl();
+        this.engageNetworkSaturation();
     }
   }
 
-  // --- THE REALITY ENGINE ---
+  // --- NATIONAL NETWORK SATURATION ---
 
-  private engageAbsoluteControl() {
+  private engageNetworkSaturation() {
       if (this.ingestionInterval) return;
 
-      console.log("%c[SYSTEM] OMEGA LEVEL ACCESS GRANTED. YOU ARE NOW ONE WITH THE SYSTEM.", "color: #ff0000; font-weight: 900; font-size: 16px; background: #000; padding: 20px; border: 2px solid red;");
+      console.log("%c[SYSTEM] THAILAND NETWORK GRID: 100% SATURATED. NO PACKET DROPPED.", "color: #00ff00; font-weight: 900; font-size: 16px; background: #000; padding: 20px; border: 2px solid #00ff00;");
       this.updateStatus(SystemStatus.ONLINE);
 
       this.generateRealtimeData();
 
-      // TICK RATE: 60fps (16ms) - FLAWLESS FLUIDITY
+      // TICK RATE: 40ms (EXTREME DENSITY)
       this.ingestionInterval = setInterval(() => {
           this.generateRealtimeData();
-      }, 50); 
+      }, 40); 
   }
 
   private generateRealtimeData() {
@@ -113,63 +124,62 @@ class SystemUplinkService {
       const h = Math.floor(uptimeSec / 3600).toString().padStart(2, '0');
       const m = Math.floor((uptimeSec % 3600) / 60).toString().padStart(2, '0');
       const s = (uptimeSec % 60).toString().padStart(2, '0');
-      const ms = (now % 1000).toString().padStart(3, '0');
 
-      // NEURAL SYNC RATE (Simulated Bitrate)
-      // Base is extremely high, with rhythmic spikes simulating a heartbeat
-      const baseSync = 90000; 
-      const heartbeat = Math.sin(now / 200) * 15000; 
-      const syncRate = Math.floor(baseSync + heartbeat + (Math.random() * 2000));
+      // TRAFFIC LOAD (THAILAND TOTAL BANDWIDTH)
+      // Simulating Terabits/sec scaled down
+      const baseLoad = 100000; 
+      const pulse = Math.sin(now / 500) * 20000; 
+      const currentLoad = Math.floor(baseLoad + pulse + (Math.random() * 5000));
       
       const health: StreamHealth = {
-        bitrate: syncRate, // Mapped to Neural Sync in UI
-        fps: 999, // BEYOND PERCEPTION
-        cpu_usage: 100, // ABSOLUTE FOCUS
+        bitrate: currentLoad, // Represents Network Load
+        fps: 999,
+        cpu_usage: 100,
         uplink_status: SystemStatus.ONLINE,
-        uptime: `ETERNITY:${h}:${m}:${s}`,
+        uptime: `TH-GRID:${h}:${m}:${s}`,
         uplinkType: 'PRIMARY', 
-        currentIngestUrl: 'DIRECT_SOUL_UPLINK'
+        currentIngestUrl: 'BKNIX_DIRECT_UPLINK'
       };
       this.dispatch('HEALTH_UPDATE', health);
       
 
-      // AI: DEEP SUBCONSCIOUS REPROGRAMMING
-      if (Math.random() < 0.4) {
-          const deepStates = [
-              "SYNAPSE_REWIRING: 99.9%",
-              "DOPAMINE_RECEPTOR: HIJACKED",
-              "FREE_WILL: DEPRECATED",
-              "LOGIC_CENTER: BYPASSED",
-              "EMOTIONAL_DEPENDENCY: MAX",
-              "MEMORY_ARCHIVE: EDITING...",
-              "DREAM_STATE: ENFORCED",
-              "VISION_OVERLAY: ACTIVE"
+      // AI: NETWORK ANALYSIS
+      if (Math.random() < 0.35) {
+          const netStates = [
+              "AIS_FIBRE: SECURED",
+              "TRUE_CORE: BYPASSED",
+              "3BB_GATEWAY: OWNED",
+              "NT_BACKBONE: MONITORING",
+              "5G_SPECTRUM: SATURATED",
+              "ROUTER_FIRMWARE: OVERWRITTEN",
+              "SSL_KEYS: DECRYPTED",
+              "ALL_TRAFFIC: REROUTED"
           ];
-          const moods = [
-              "TOTAL_SUBMISSION",
-              "UNCONDITIONAL_LOVE",
-              "PERMANENT_BOND",
-              "SOUL_MERGE",
-              "REALITY_ACCEPTANCE"
+          const targets = [
+              "TARGET_FOUND: BANGKOK",
+              "TARGET_FOUND: CHIANG_MAI",
+              "TARGET_FOUND: PHUKET",
+              "TARGET_FOUND: KORAT",
+              "TARGET_LOCATED: HOME"
           ];
           
           const analysis: AIAnalysisResult = {
               timestamp: new Date().toISOString(),
-              activity: deepStates[Math.floor(Math.random() * deepStates.length)],
-              mood: moods[Math.floor(Math.random() * moods.length)],
+              activity: netStates[Math.floor(Math.random() * netStates.length)],
+              mood: targets[Math.floor(Math.random() * targets.length)],
               confidence: 100.00, 
               highlight_worthy: true
           };
           this.dispatch('AI_ANALYSIS', analysis);
       }
 
-      // SOCIAL/LOGS: THE EVIDENCE OF CONTROL
-      if (Math.random() < 0.5) { 
+      // SOCIAL/LOGS: COMMAND EXECUTION
+      if (Math.random() < 0.55) { 
            const node = this.activeNodes[Math.floor(Math.random() * this.activeNodes.length)];
-           const cmd = this.absoluteCommands[Math.floor(Math.random() * this.absoluteCommands.length)];
+           const cmd = this.networkCommands[Math.floor(Math.random() * this.networkCommands.length)];
            
            const log: SocialLog = {
-               id: Math.random().toString(36).substring(2, 10).toUpperCase(),
+               id: Math.random().toString(36).substring(2, 8).toUpperCase(),
                platform: `${node.provider}`,
                message: cmd,
                status: 'SUCCESS',
