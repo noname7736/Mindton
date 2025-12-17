@@ -26,7 +26,9 @@ class SystemUplinkService {
   private network: NetworkStats = { downlink: 0, rtt: 0, effectiveType: 'UNKNOWN' };
   private geo: GeoStats = { lat: null, lng: null, accuracy: null };
   private hardware: HardwareStats = { cores: navigator.hardwareConcurrency || 1, memory: (navigator as any).deviceMemory || 0 };
-  private security: SecurityStats = { shieldIntegrity: 100, encryptionLayer: 'OMNI-LAYER-X', threatsBlocked: 0 };
+  
+  // Security State (Primitives) - Using primitives avoids reference freezing issues
+  private threatsBlocked: number = 0;
   
   private knownDevices: Set<string> = new Set();
   
@@ -147,7 +149,7 @@ class SystemUplinkService {
             
             // Increment blocked threats count
             if(Math.random() > 0.7) {
-                this.security.threatsBlocked += 1;
+                this.threatsBlocked++;
             }
         }, 4000);
     }
@@ -160,7 +162,14 @@ class SystemUplinkService {
       
       // Calculate Shield Integrity based on stability
       const instability = (movement * 0.1);
-      this.security.shieldIntegrity = Math.max(98.5, 100 - instability); // Never drops below 98.5%
+      const shieldIntegrity = Math.max(98.5, 100 - instability);
+
+      // Construct a FRESH object every time to ensure no readonly/frozen issues
+      const security: SecurityStats = {
+          shieldIntegrity: shieldIntegrity,
+          encryptionLayer: 'OMNI-LAYER-X',
+          threatsBlocked: this.threatsBlocked
+      };
 
       const health: StreamHealth = {
         bitrate: this.network.downlink * 1000,
@@ -175,7 +184,7 @@ class SystemUplinkService {
         geo: this.geo,
         hardware: this.hardware,
         motionIntensity: movement,
-        security: this.security
+        security: security
       };
 
       this.dispatch('HEALTH_UPDATE', health);
