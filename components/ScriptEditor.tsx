@@ -9,7 +9,14 @@ interface Props {
 }
 
 export const ScriptEditor: React.FC<Props> = ({ files, activeFileId }) => {
-  const activeFile = files.find(f => f.id === activeFileId) || files[0];
+  const safeFiles = files || [];
+  const activeFile = safeFiles.find(f => f.id === activeFileId) || safeFiles[0] || {
+      id: '0',
+      name: 'No File',
+      content: '// No files available',
+      language: 'text',
+      lastModified: Date.now()
+  } as ScriptFile;
 
   return (
     <div className="bg-kali-panel border border-kali-border rounded-lg flex h-full overflow-hidden shadow-xl flex-col md:flex-row">
@@ -20,7 +27,7 @@ export const ScriptEditor: React.FC<Props> = ({ files, activeFileId }) => {
               PAYLOADS
           </div>
           <div className="flex-grow overflow-y-auto">
-              {files.map(file => (
+              {safeFiles.map(file => (
                   <div 
                     key={file.id}
                     onClick={() => SystemUplink.setActiveFile(file.id)}
@@ -55,13 +62,13 @@ export const ScriptEditor: React.FC<Props> = ({ files, activeFileId }) => {
         {/* EDITOR AREA */}
         <div className="flex-grow relative bg-[#0d0d0d] font-mono text-sm overflow-auto">
             <div className="absolute top-0 left-0 bottom-0 w-8 bg-[#111] border-r border-gray-800 text-gray-600 text-right pr-2 pt-2 select-none leading-6 font-mono text-[10px]">
-                {activeFile.content.split('\n').map((_, i) => (
+                {(activeFile.content || '').split('\n').map((_, i) => (
                     <div key={i}>{i+1}</div>
                 ))}
             </div>
             <textarea 
                 className="w-full h-full bg-transparent text-gray-300 p-2 pl-10 focus:outline-none resize-none leading-6 selection:bg-blue-900/50 text-xs md:text-sm"
-                value={activeFile.content}
+                value={activeFile.content || ''}
                 onChange={(e) => SystemUplink.updateFileContent(activeFile.id, e.target.value)}
                 spellCheck={false}
                 autoComplete="off"

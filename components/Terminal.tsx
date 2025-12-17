@@ -10,10 +10,12 @@ interface Props {
 export const Terminal: React.FC<Props> = ({ lines }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
+  
+  const safeLines = lines || [];
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [lines]);
+  }, [safeLines]);
 
   const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -40,7 +42,7 @@ export const Terminal: React.FC<Props> = ({ lines }) => {
       {/* TERMINAL BODY */}
       <div className="flex-grow bg-[#050505] p-3 overflow-y-auto font-mono text-xs md:text-sm" onClick={() => document.getElementById('term-input')?.focus()}>
         
-        {lines.length === 0 && (
+        {safeLines.length === 0 && (
             <div className="text-gray-600 mb-4 text-[10px]">
                 Kali Enterprise Kernel [Version 6.8.9]<br/>
                 (c) 2024 Offensive Security. All rights reserved.<br/><br/>
@@ -48,7 +50,7 @@ export const Terminal: React.FC<Props> = ({ lines }) => {
             </div>
         )}
         
-        {lines.map((line) => (
+        {safeLines.map((line) => (
             <div key={line.id} className="mb-0.5 break-all flex group">
                 <span className="text-gray-700 mr-2 shrink-0 select-none text-[10px] pt-0.5">{line.timestamp}</span>
                 <span className="leading-tight">

@@ -8,8 +8,12 @@ interface Props {
 }
 
 const ServerDashboard: React.FC<Props> = ({ hw }) => {
+  if (!hw) return <div className="p-4 text-xs text-gray-500">Loading Hardware Metrics...</div>;
+
   // Determine connection health based on real CPU/Memory presence
   const isHealthy = hw.ramTotal > 0;
+  const cpuLoad = hw.cpuLoad || [];
+  const currentLoad = cpuLoad.length > 0 ? cpuLoad[cpuLoad.length - 1] : 0;
 
   return (
     <div className="bg-kali-panel border border-kali-border rounded-lg p-4 flex flex-col gap-4 h-full shadow-lg">
@@ -23,13 +27,13 @@ const ServerDashboard: React.FC<Props> = ({ hw }) => {
             <div className="overflow-hidden">
                 <div className="text-xs text-kali-muted uppercase tracking-wider font-bold">Host Environment</div>
                 <div className="text-sm font-mono font-bold text-white truncate w-full" title={hw.model}>
-                    {hw.model.substring(0, 30)}...
+                    {(hw.model || 'Unknown').substring(0, 30)}...
                 </div>
             </div>
         </div>
         <div className="text-right">
             <div className="text-[10px] text-kali-muted">SESSION TIME</div>
-            <div className="text-xs font-mono text-green-500">{SystemUplink.formatUptime(hw.uptime)}</div>
+            <div className="text-xs font-mono text-green-500">{SystemUplink.formatUptime(hw.uptime || 0)}</div>
         </div>
       </div>
 
@@ -42,10 +46,10 @@ const ServerDashboard: React.FC<Props> = ({ hw }) => {
                 <Cpu size={14} /> <span className="text-[10px] font-bold">THREAD LOAD</span>
             </div>
             <div className="text-2xl font-mono text-white mb-1">
-                {hw.cpuLoad[hw.cpuLoad.length - 1]}%
+                {currentLoad}%
             </div>
             <div className="flex gap-0.5 h-6 items-end">
-                {hw.cpuLoad.map((load, i) => (
+                {cpuLoad.map((load, i) => (
                     <div key={i} className={`flex-1 transition-colors duration-300 ${load > 50 ? 'bg-red-600' : 'bg-blue-600/50'}`} style={{height: `${Math.max(10, load)}%`}}></div>
                 ))}
             </div>
@@ -85,7 +89,7 @@ const ServerDashboard: React.FC<Props> = ({ hw }) => {
                 <HardDrive size={14} /> <span className="text-[10px] font-bold">STORAGE</span>
             </div>
             <div className="text-sm font-mono text-gray-300 mb-1 truncate">
-                {hw.raidStatus}
+                {hw.raidStatus || 'UNKNOWN'}
             </div>
             <div className="text-[10px] text-gray-500 mt-2">
                Access: READ/WRITE

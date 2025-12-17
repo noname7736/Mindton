@@ -7,6 +7,8 @@ interface Props {
 }
 
 export const NetworkMap: React.FC<Props> = ({ hosts }) => {
+  const safeHosts = hosts || [];
+
   return (
     <div className="bg-kali-panel border border-kali-border rounded-lg h-full flex flex-col shadow-lg overflow-hidden">
        {/* HEADER */}
@@ -23,11 +25,11 @@ export const NetworkMap: React.FC<Props> = ({ hosts }) => {
        <div className="flex-grow overflow-y-auto p-3">
           <div className="grid grid-cols-1 gap-2">
             
-            {hosts.length === 0 && <div className="text-gray-500 text-xs text-center mt-10">Initializing Sensors...</div>}
+            {safeHosts.length === 0 && <div className="text-gray-500 text-xs text-center mt-10">Initializing Sensors...</div>}
 
             {/* Render by Category */}
             {['HARDWARE', 'NETWORK', 'SECURITY', 'SOFTWARE'].map(cat => {
-                const items = hosts.filter(h => h.category === cat);
+                const items = safeHosts.filter(h => h.category === cat);
                 if (items.length === 0) return null;
 
                 return (
