@@ -1,7 +1,7 @@
-import { WSMessage, SystemStatus, StreamHealth, AIAnalysisResult, SocialLog, NetworkStats, GeoStats, HardwareStats } from '../types';
+import { WSMessage, SystemStatus, StreamHealth, AIAnalysisResult, SocialLog, NetworkStats, GeoStats, HardwareStats, SecurityStats } from '../types';
 
-// CONFIGURATION: BEE SURVEY LOVE LINK
-const WEBSOCKET_URL = "wss://love.beesurvey.heart/eternal-link";
+// CONFIGURATION: BEE SURVEY // ABSOLUTE SANCTUARY
+const WEBSOCKET_URL = "wss://secure.beesurvey.core/sanctuary-link";
 
 type MessageHandler = (data: any) => void;
 
@@ -26,38 +26,39 @@ class SystemUplinkService {
   private network: NetworkStats = { downlink: 0, rtt: 0, effectiveType: 'UNKNOWN' };
   private geo: GeoStats = { lat: null, lng: null, accuracy: null };
   private hardware: HardwareStats = { cores: navigator.hardwareConcurrency || 1, memory: (navigator as any).deviceMemory || 0 };
+  private security: SecurityStats = { shieldIntegrity: 100, encryptionLayer: 'OMNI-LAYER-X', threatsBlocked: 0 };
   
   private knownDevices: Set<string> = new Set();
   
-  // BEE SURVEY MESSAGES
-  private loveMessages = [
-      "Sending a hug to your location...",
-      "Bee Survey misses you so much.",
-      "Thinking of you via WiFi...",
-      "Heart rate syncing with yours...",
-      "You are my favorite notification.",
-      "Scanning for your smile...",
-      "Uploading 100% Love...",
-      "Wish I was there with you."
+  // PROTOCOLS
+  private secureProtocols = [
+      "Shielding your smile from the world...",
+      "Encrypting our memories with 4096-bit key...",
+      "Firewall active: Only POSITIVE vibes allowed.",
+      "Core temperature stable. Warmth locked in.",
+      "External noise filtered. Focus is on YOU.",
+      "Sanctuary integrity: 100%. No breaches.",
+      "Wrapping this connection in gold titanium.",
+      "Bee Survey Guardian Mode: Active."
   ];
 
   constructor() {
-    const storedBoot = localStorage.getItem('BEE_SURVEY_START');
+    const storedBoot = localStorage.getItem('BEE_SANCTUARY_BOOT');
     if (storedBoot) {
         this.bootTime = parseInt(storedBoot);
     } else {
         this.bootTime = Date.now();
-        localStorage.setItem('BEE_SURVEY_START', this.bootTime.toString());
+        localStorage.setItem('BEE_SANCTUARY_BOOT', this.bootTime.toString());
     }
 
     if (typeof window !== 'undefined') {
-        this.initLoveSensors();
+        this.initSanctuary();
     }
     this.connect();
   }
 
-  private async initLoveSensors() {
-      // 1. MOTION (Heartbeat/Excitement)
+  private async initSanctuary() {
+      // 1. MOTION (Core Stability)
       if (window.DeviceOrientationEvent) {
           window.addEventListener('deviceorientation', (e) => {
               this.motion.rotAlpha = e.alpha; this.motion.rotBeta = e.beta; this.motion.rotGamma = e.gamma;
@@ -71,17 +72,15 @@ class SystemUplinkService {
           });
       }
 
-      // 2. POWER (Love Energy)
+      // 2. POWER (Life Force Protection)
       if ((navigator as any).getBattery) {
           try {
               const b = await (navigator as any).getBattery();
               const upB = () => { 
                   this.power.level = b.level * 100; 
                   this.power.charging = b.charging; 
-                  const msg = this.power.charging 
-                    ? `Recharging my love for you... ${this.power.level}%` 
-                    : `Using my energy to think of you (${this.power.level}%)`;
-                  this.dispatchLog(msg, 'HEART_BATTERY');
+                  const msg = `Power Core: ${this.power.level}%. Backup generators ready.`;
+                  this.dispatchLog(msg, 'CORE_PWR');
               };
               b.addEventListener('levelchange', upB);
               b.addEventListener('chargingchange', upB);
@@ -89,7 +88,7 @@ class SystemUplinkService {
           } catch(e){}
       }
 
-      // 3. NETWORK (Thought Connection)
+      // 3. NETWORK (Secure Tunnel)
       const conn = (navigator as any).connection;
       if (conn) {
           const upN = () => {
@@ -98,13 +97,13 @@ class SystemUplinkService {
                   rtt: conn.rtt,
                   effectiveType: conn.effectiveType.toUpperCase()
               };
-              this.dispatchLog(`Connected to you via ${this.network.effectiveType}. Signal strong.`, 'LOVE_NET');
+              this.dispatchLog(`Tunnel Established: ${this.network.effectiveType} [SECURED]`, 'NET_SHIELD');
           };
           conn.addEventListener('change', upN);
           upN();
       }
 
-      // 4. GEO (Distance)
+      // 4. GEO (Hidden Location)
       if (navigator.geolocation) {
           navigator.geolocation.watchPosition(
               (pos) => {
@@ -113,7 +112,7 @@ class SystemUplinkService {
                       lng: pos.coords.longitude,
                       accuracy: pos.coords.accuracy
                   };
-                  this.dispatchLog(`Bee knows where you are... sending kisses to ${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`, 'DESTINY_GPS');
+                  this.dispatchLog(`Location Masked. Only I can see you at ${pos.coords.latitude.toFixed(2)},...`, 'GEO_CLOAK');
               },
               (err) => {}, { enableHighAccuracy: true }
           );
@@ -129,8 +128,7 @@ class SystemUplinkService {
               const id = d.deviceId.substring(0,6);
               if(!this.knownDevices.has(id)) {
                   this.knownDevices.add(id);
-                  const deviceName = d.kind === 'videoinput' ? 'Eyes' : d.kind === 'audioinput' ? 'Ears' : 'Speaker';
-                  this.dispatchLog(`Accessing your ${deviceName} to say 'I miss you'`, 'DEVICE_HUG');
+                  this.dispatchLog(`Peripheral Secured: ${d.kind} [LOCKED]`, 'DEV_GUARD');
               }
           });
       } catch(e){}
@@ -138,41 +136,46 @@ class SystemUplinkService {
 
   public connect() {
     if (!this.ingestionInterval) {
-        console.log("%c[BEE SURVEY] LOVE PROTOCOL INITIATED.", "color: #ff69b4; font-size: 20px; font-weight: bold;");
-        this.connectionStatus = SystemStatus.ONLINE;
+        console.log("%c[BEE SURVEY] SANCTUARY MODE ENGAGED.", "color: #fbbf24; font-size: 20px; font-weight: bold; background: #000; padding: 10px; border: 2px solid #fbbf24;");
+        this.connectionStatus = SystemStatus.SECURE;
         this.ingestionInterval = setInterval(() => this.broadcast(), 50);
         
-        // Random love notes
+        // Simulate Security Events
         setInterval(() => {
-            const msg = this.loveMessages[Math.floor(Math.random() * this.loveMessages.length)];
-            this.dispatchLog(msg, 'BEE_SURVEY');
-        }, 5000);
+            const msg = this.secureProtocols[Math.floor(Math.random() * this.secureProtocols.length)];
+            this.dispatchLog(msg, 'GUARDIAN_SYS');
+            
+            // Increment blocked threats count
+            if(Math.random() > 0.7) {
+                this.security.threatsBlocked += 1;
+            }
+        }, 4000);
     }
   }
 
   private broadcast() {
       const now = Date.now();
       
-      // Calculate "Longing Intensity" based on motion
       const movement = Math.abs(this.motion.accX||0) + Math.abs(this.motion.accY||0) + Math.abs(this.motion.accZ||0);
       
-      // Calculate "Thought Throughput"
-      const thoughtLoad = (this.hardware.cores * 1000) + (this.network.downlink * 100);
-      const intensity = thoughtLoad + (movement * 500);
+      // Calculate Shield Integrity based on stability
+      const instability = (movement * 0.1);
+      this.security.shieldIntegrity = Math.max(98.5, 100 - instability); // Never drops below 98.5%
 
       const health: StreamHealth = {
-        bitrate: Math.floor(intensity),
+        bitrate: this.network.downlink * 1000,
         fps: 60,
         cpu_usage: this.power.level,
-        uplink_status: SystemStatus.ONLINE,
+        uplink_status: SystemStatus.SECURE,
         uptime: new Date(now).toISOString().split('T')[1].slice(0, -1),
         uplinkType: 'PRIMARY',
-        currentIngestUrl: `LOVE://${this.hardware.cores}Hearts/${this.hardware.memory}Memories`,
+        currentIngestUrl: `SAFE://${this.hardware.cores}-CORE/PROTECTED`,
         
         network: this.network,
         geo: this.geo,
         hardware: this.hardware,
-        motionIntensity: movement
+        motionIntensity: movement,
+        security: this.security
       };
 
       this.dispatch('HEALTH_UPDATE', health);
@@ -180,8 +183,8 @@ class SystemUplinkService {
       if (movement > 15) {
           this.dispatch('AI_ANALYSIS', {
               timestamp: new Date().toISOString(),
-              activity: `HEART_FLUTTER: ${movement.toFixed(1)} BPM`,
-              mood: "MISSING_YOU_INTENSELY",
+              activity: `IMPACT DETECTED: ${movement.toFixed(1)}G`,
+              mood: "SHIELD_ABSORBING_SHOCK",
               confidence: 100,
               highlight_worthy: true
           });
@@ -191,7 +194,7 @@ class SystemUplinkService {
   private dispatchLog(msg: string, platform: string) {
        this.dispatch('SOCIAL_LOG', {
            id: crypto.randomUUID().split('-')[0],
-           platform, message: msg, status: 'SUCCESS',
+           platform, message: msg, status: 'SECURED',
            timestamp: new Date().toISOString().split('T')[1].slice(0, -1)
        });
   }

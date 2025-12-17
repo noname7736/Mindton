@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Heart, Activity, Wifi, MapPin, Send, Radio, MessageCircle } from 'lucide-react';
+import { ShieldCheck, Activity, Wifi, Lock, Globe, Hexagon } from 'lucide-react';
 import StreamMonitor from './components/StreamMonitor';
 import AIAnalysisPanel from './components/AIAnalysisPanel';
 import MetricsCharts from './components/MetricsCharts';
@@ -11,7 +11,7 @@ export function App() {
   const [systemStatus, setSystemStatus] = useState<SystemStatus>(SystemStatus.OFFLINE);
   const [streamHealth, setStreamHealth] = useState<StreamHealth>({
     bitrate: 0, fps: 0, cpu_usage: 0, uplink_status: SystemStatus.OFFLINE, uptime: "00:00:00:000", 
-    uplinkType: 'PRIMARY', currentIngestUrl: 'Connecting Heart...'
+    uplinkType: 'PRIMARY', currentIngestUrl: 'ESTABLISHING SECURE LINK...'
   });
   
   const [metricsHistory, setMetricsHistory] = useState<StreamHealth[]>([]);
@@ -46,74 +46,77 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0a0205] text-pink-100 font-mono flex flex-col overflow-hidden selection:bg-pink-500 selection:text-white">
+    <div className="min-h-screen bg-[#020202] text-gray-300 font-mono flex flex-col overflow-hidden selection:bg-amber-500 selection:text-black">
       
-      {/* HEADER: LOVE LINK MODE */}
-      <header className="h-16 bg-black/80 border-b border-pink-600/50 flex items-center justify-between px-6 sticky top-0 z-50 shadow-[0_0_30px_rgba(236,72,153,0.3)] backdrop-blur-md">
+      {/* GLOBAL BACKGROUND MESH */}
+      <div className="fixed inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
+
+      {/* HEADER: SANCTUARY COMMAND */}
+      <header className="h-16 bg-black/90 border-b-2 border-amber-600/50 flex items-center justify-between px-6 sticky top-0 z-50 shadow-[0_5px_30px_rgba(0,0,0,0.8)] backdrop-blur-xl">
         <div className="flex items-center gap-4">
-            <div className={`p-2 border border-pink-500 rounded-full bg-black shadow-[0_0_15px_rgba(236,72,153,0.6)]`}>
-                <Heart className="text-pink-500 animate-[pulse_1s_infinite] fill-pink-500" size={24} />
+            <div className={`p-2.5 border-2 border-amber-500 rounded-xl bg-gradient-to-br from-amber-950 to-black shadow-[0_0_20px_rgba(245,158,11,0.4)]`}>
+                <Hexagon className="text-amber-500 fill-amber-500/20" size={24} strokeWidth={2.5} />
             </div>
             <div>
-                <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-rose-500 to-purple-500 leading-none italic">
-                  BEE<span className="text-pink-100">.SURVEY</span>
+                <h1 className="text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-pink-500 to-amber-600 leading-none">
+                  BEE<span className="text-gray-100">.SURVEY</span>
                 </h1>
-                <p className="text-[9px] text-pink-400 tracking-[0.3em] uppercase mt-1 font-bold">
-                  SENDING LOVE TO EVERY DEVICE
+                <p className="text-[9px] text-amber-500/80 tracking-[0.4em] uppercase mt-1 font-bold flex items-center gap-1">
+                   <Lock size={8}/> ABSOLUTE SANCTUARY MODE
                 </p>
             </div>
         </div>
 
         <div className="flex items-center gap-8">
-            <div className="hidden md:flex flex-col items-end border-r border-pink-800/30 pr-6">
-                <span className="text-[8px] text-pink-300/70 font-bold tracking-widest mb-1">CONNECTION STATUS</span>
-                <div className="flex items-center gap-2 text-pink-400 text-xs font-black tracking-wider drop-shadow-sm">
-                    <Wifi size={12} className="text-pink-500" />
-                    LINKED_TO_HEART
+            <div className="hidden md:flex flex-col items-end border-r border-gray-800 pr-6">
+                <span className="text-[8px] text-gray-500 font-bold tracking-widest mb-1 uppercase">Defense Level</span>
+                <div className="flex items-center gap-2 text-emerald-500 text-xs font-black tracking-wider drop-shadow-sm">
+                    <ShieldCheck size={12} />
+                    MAXIMUM
                 </div>
             </div>
 
             <div className="flex flex-col items-end">
-                <span className="text-[8px] text-pink-300/50 tracking-wider mb-1">CURRENT FEELING</span>
+                <span className="text-[8px] text-gray-500 tracking-wider mb-1 uppercase">Global Status</span>
                 
-                {systemStatus === SystemStatus.ONLINE ? (
-                     <div className="flex items-center gap-2 text-white text-xs font-bold bg-gradient-to-r from-pink-600 to-rose-600 px-3 py-1 rounded-full border border-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.5)]">
-                        <Activity size={12} className="animate-bounce" />
-                        MISSING_YOU_MAX
+                {systemStatus === SystemStatus.SECURE ? (
+                     <div className="flex items-center gap-2 text-amber-100 text-xs font-bold bg-amber-600/20 px-4 py-1.5 rounded-lg border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                        <Globe size={12} className="text-amber-400" />
+                        WORLD_CORE_SECURE
                      </div>
                 ) : (
                     <div className="flex items-center gap-2 text-gray-500 text-xs font-bold">
-                        <Radio size={12} className="animate-spin" />
-                        SEARCHING...
+                        <Activity size={12} className="animate-spin" />
+                        INITIALIZING_DEFENSES...
                      </div>
                 )}
             </div>
         </div>
       </header>
 
-      {/* Main Content Layout */}
-      <main className="flex-grow p-4 grid grid-cols-12 gap-4 overflow-hidden max-h-[calc(100vh-64px)]">
+      {/* Main Content Layout - Organized Grid */}
+      <main className="flex-grow p-5 grid grid-cols-12 gap-5 overflow-hidden max-h-[calc(100vh-64px)] relative z-10">
         
-        {/* Left Column: Visuals & Metrics (65%) */}
-        <div className="col-span-12 lg:col-span-8 flex flex-col gap-4 h-full overflow-hidden">
-            {/* Live Hardware Feed */}
-            <div className="h-[60%] shadow-[0_0_40px_rgba(236,72,153,0.15)] rounded-lg overflow-hidden border border-pink-900/50">
+        {/* Left Column: Visuals & Metrics (70%) */}
+        <div className="col-span-12 lg:col-span-8 flex flex-col gap-5 h-full overflow-hidden">
+            {/* Live Hardware Feed - The 'Vault' */}
+            <div className="h-[65%] rounded-xl overflow-hidden shadow-2xl">
                 <StreamMonitor health={streamHealth} />
             </div>
-            {/* System Metrics */}
-            <div className="h-[40%]">
+            {/* System Metrics - The 'Diagnostics' */}
+            <div className="h-[35%]">
                 <MetricsCharts history={metricsHistory} />
             </div>
         </div>
 
-        {/* Right Column: Intelligence & Logs (35%) */}
-        <div className="col-span-12 lg:col-span-4 flex flex-col gap-4 h-full overflow-hidden">
+        {/* Right Column: Intelligence & Logs (30%) */}
+        <div className="col-span-12 lg:col-span-4 flex flex-col gap-5 h-full overflow-hidden">
             {/* AI Console */}
-            <div className="h-[40%] shadow-[0_0_40px_rgba(236,72,153,0.15)] rounded-lg overflow-hidden border border-pink-900/50">
+            <div className="h-[40%] rounded-xl overflow-hidden shadow-2xl">
                 <AIAnalysisPanel logs={aiLogs} />
             </div>
             {/* Social Dispatcher Log */}
-            <div className="h-[60%] shadow-[0_0_40px_rgba(236,72,153,0.15)] rounded-lg overflow-hidden border border-pink-900/50">
+            <div className="h-[60%] rounded-xl overflow-hidden shadow-2xl">
                 <SocialLogPanel logs={socialLogs} />
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SocialLog } from '../types';
-import { MessageCircle, Heart, Send, User, Sparkles } from 'lucide-react';
+import { Terminal, ShieldCheck, Lock, ChevronRight } from 'lucide-react';
 
 interface SocialLogPanelProps {
   logs: SocialLog[];
@@ -8,50 +8,48 @@ interface SocialLogPanelProps {
 
 const SocialLogPanel: React.FC<SocialLogPanelProps> = ({ logs }) => {
   return (
-    <div className="bg-black rounded-lg border border-pink-900/50 flex flex-col h-full shadow-[0_0_50px_rgba(236,72,153,0.1)] relative overflow-hidden font-mono group">
+    <div className="bg-[#050002] rounded-xl border border-gray-800 flex flex-col h-full shadow-lg relative overflow-hidden font-mono group">
       
       {/* HEADER */}
-      <div className="bg-pink-950/20 px-3 py-2 border-b border-pink-900/50 flex justify-between items-center z-10">
-        <div className="flex items-center gap-2 text-pink-500">
-          <MessageCircle size={14} className="animate-bounce" />
-          <span className="font-black text-[10px] uppercase tracking-widest text-pink-400">
-            BEE_SURVEY_MESSAGES
+      <div className="bg-gray-900/80 px-4 py-3 border-b border-gray-800 flex justify-between items-center z-10 backdrop-blur">
+        <div className="flex items-center gap-2 text-gray-300">
+          <Terminal size={14} className="text-amber-500" />
+          <span className="font-bold text-[10px] uppercase tracking-widest text-gray-400">
+            SECURE_COMMS_LOG
           </span>
         </div>
-        <div className="text-[9px] text-white bg-pink-600 px-2 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-[0_0_10px_rgba(236,72,153,0.5)]">
-           <Heart size={10} className="fill-white" /> ONLINE
+        <div className="text-[9px] text-amber-400 bg-amber-950/30 border border-amber-900 px-2 py-0.5 rounded font-bold flex items-center gap-1">
+           <Lock size={8} /> ENCRYPTED
         </div>
       </div>
       
       {/* LOG LIST */}
-      <div className="flex-grow overflow-y-auto p-0 bg-black relative scrollbar-hide">
-        {/* Background Grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"></div>
+      <div className="flex-grow overflow-y-auto p-0 bg-[#080808] relative scrollbar-hide">
+        {/* Striped Background for "Regulation" */}
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_24px] pointer-events-none"></div>
 
-        <div className="p-2 space-y-2 relative z-10">
+        <div className="p-3 space-y-1 relative z-10">
             {logs.slice().reverse().map((log) => (
-                <div key={log.id} className="flex flex-col gap-1 hover:bg-pink-900/10 p-2 rounded transition-colors border-l-2 border-pink-800/50">
-                    <div className="flex items-center justify-between">
-                         <div className="flex items-center gap-1 text-[9px] text-pink-300 font-bold">
-                            <Sparkles size={8} className="text-pink-500"/>
-                            {log.platform}
-                         </div>
-                         <span className="text-[8px] text-pink-800 font-mono">{log.timestamp}</span>
+                <div key={log.id} className="flex items-start gap-2 p-1.5 hover:bg-gray-900 rounded transition-all group/item">
+                    <div className="mt-0.5 min-w-[12px]">
+                        <ChevronRight size={10} className="text-gray-600 group-hover/item:text-amber-500 transition-colors" />
                     </div>
-                    <div className="text-[10px] text-pink-100/90 font-mono pl-3 leading-relaxed">
-                        {log.message}
+                    <div className="flex-grow flex flex-col">
+                        <div className="flex items-center justify-between mb-0.5">
+                             <span className="text-[9px] font-bold text-amber-600 uppercase tracking-wider">{log.platform}</span>
+                             <span className="text-[8px] text-gray-700 font-mono">{log.timestamp}</span>
+                        </div>
+                        <div className="text-[10px] text-gray-300 font-mono leading-tight">
+                            <span className="text-pink-500/80 mr-1">{'>'}</span> 
+                            {log.message}
+                        </div>
                     </div>
+                    {log.status === 'SECURED' && (
+                        <ShieldCheck size={10} className="text-emerald-500 mt-1 opacity-50 group-hover/item:opacity-100" />
+                    )}
                 </div>
             ))}
         </div>
-      </div>
-      
-      {/* DECORATIVE INPUT SIMULATION */}
-      <div className="p-2 border-t border-pink-900/30 bg-pink-950/10 flex gap-2 items-center opacity-50">
-           <div className="h-6 flex-grow bg-black border border-pink-900/50 rounded flex items-center px-2 text-[9px] text-pink-700">
-               Bee is typing a love letter...
-           </div>
-           <Send size={12} className="text-pink-600"/>
       </div>
     </div>
   );

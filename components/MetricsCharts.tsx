@@ -1,7 +1,7 @@
 import React from 'react';
-import { AreaChart, Area, ResponsiveContainer, CartesianGrid, YAxis } from 'recharts';
+import { AreaChart, Area, ResponsiveContainer, CartesianGrid, Tooltip } from 'recharts';
 import { StreamHealth } from '../types';
-import { HeartPulse, Send } from 'lucide-react';
+import { ShieldCheck, Lock } from 'lucide-react';
 
 interface MetricsChartsProps {
   history: StreamHealth[];
@@ -9,69 +9,88 @@ interface MetricsChartsProps {
 
 const MetricsCharts: React.FC<MetricsChartsProps> = ({ history }) => {
   const data = history.slice(-60);
-  const currentMotion = data[data.length-1]?.motionIntensity || 0;
-  const currentNet = data[data.length-1]?.network?.downlink || 0;
+  const integrity = data[data.length-1]?.security?.shieldIntegrity || 100;
+  const encryption = 4096; // Simulated 4096-bit
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
       
-      {/* CHART 1: LONGING INTENSITY */}
-      <div className="bg-black/80 backdrop-blur rounded-lg border border-rose-500/30 p-4 shadow-[0_0_30px_rgba(244,63,94,0.1)] flex flex-col relative overflow-hidden">
-        <div className="flex items-center justify-between mb-2 z-30">
+      {/* CHART 1: SHIELD INTEGRITY */}
+      <div className="bg-[#080204] rounded-xl border border-amber-900/30 p-4 shadow-lg flex flex-col relative overflow-hidden group hover:border-amber-500/30 transition-all">
+        <div className="flex items-center justify-between mb-4 z-30">
             <div className="flex items-center gap-2">
-                <HeartPulse size={18} className="text-rose-500" />
+                <div className="p-1.5 bg-amber-950/30 rounded border border-amber-900/50">
+                    <ShieldCheck size={14} className="text-amber-500" />
+                </div>
                 <div>
-                    <h3 className="text-xs font-black text-rose-400 tracking-[0.2em]">LONGING_INTENSITY</h3>
+                    <h3 className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Shield Integrity</h3>
+                    <p className="text-[8px] text-amber-800 font-mono">REAL-TIME PROTECTION STATUS</p>
                 </div>
             </div>
-            <span className="text-xl font-mono font-black text-rose-500">
-                {(currentMotion * 10).toFixed(0)} BPM
+            <span className="text-2xl font-mono font-black text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">
+                {integrity.toFixed(2)}%
             </span>
         </div>
         
-        <div className="flex-grow min-h-[150px] z-10">
+        <div className="flex-grow min-h-[120px] z-10">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
-                <linearGradient id="colorLonging" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                <linearGradient id="colorShield" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#881337" vertical={false} opacity={0.3} />
-              <YAxis hide domain={[0, 'auto']} />
-              <Area type="monotone" dataKey="motionIntensity" stroke="#f43f5e" strokeWidth={2} fill="url(#colorLonging)" isAnimationActive={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#451a03" vertical={false} opacity={0.5} />
+              <Area 
+                type="stepAfter" 
+                dataKey="security.shieldIntegrity" 
+                stroke="#f59e0b" 
+                strokeWidth={2} 
+                fill="url(#colorShield)" 
+                isAnimationActive={false} 
+                baseLine={90}
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* CHART 2: THOUGHT PACKETS */}
-      <div className="bg-black/80 backdrop-blur rounded-lg border border-purple-500/30 p-4 shadow-[0_0_30px_rgba(168,85,247,0.1)] flex flex-col relative overflow-hidden">
-        <div className="flex items-center justify-between mb-2 z-30">
+      {/* CHART 2: ENCRYPTION DEPTH */}
+      <div className="bg-[#080204] rounded-xl border border-pink-900/30 p-4 shadow-lg flex flex-col relative overflow-hidden group hover:border-pink-500/30 transition-all">
+        <div className="flex items-center justify-between mb-4 z-30">
             <div className="flex items-center gap-2">
-                <Send size={18} className="text-purple-500" />
+                <div className="p-1.5 bg-pink-950/30 rounded border border-pink-900/50">
+                    <Lock size={14} className="text-pink-500" />
+                </div>
                 <div>
-                    <h3 className="text-xs font-black text-purple-400 tracking-[0.2em]">THOUGHTS_SENT</h3>
+                    <h3 className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Encryption Depth</h3>
+                    <p className="text-[8px] text-pink-800 font-mono">BIT-RATE DENSITY</p>
                 </div>
             </div>
-            <span className="text-xl font-mono font-black text-purple-500">
-                {currentNet} Tbps
+            <span className="text-2xl font-mono font-black text-pink-400 drop-shadow-[0_0_10px_rgba(236,72,153,0.3)]">
+                {encryption}
             </span>
         </div>
         
-        <div className="flex-grow min-h-[150px] z-10">
+        <div className="flex-grow min-h-[120px] z-10">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
-                <linearGradient id="colorThoughts" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#a855f7" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
+                <linearGradient id="colorEnc" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ec4899" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#ec4899" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#581c87" vertical={false} opacity={0.3} />
-              <YAxis hide domain={[0, 'auto']} />
-              <Area type="step" dataKey="network.downlink" stroke="#a855f7" strokeWidth={2} fill="url(#colorThoughts)" isAnimationActive={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#831843" vertical={false} opacity={0.5} />
+              <Area 
+                type="monotone" 
+                dataKey="network.downlink" 
+                stroke="#ec4899" 
+                strokeWidth={2} 
+                fill="url(#colorEnc)" 
+                isAnimationActive={false} 
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>
