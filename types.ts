@@ -14,14 +14,37 @@ export interface AIAnalysisResult {
   raw_response?: string;
 }
 
+export interface NetworkStats {
+  downlink: number;
+  rtt: number;
+  effectiveType: string;
+}
+
+export interface GeoStats {
+  lat: number | null;
+  lng: number | null;
+  accuracy: number | null;
+}
+
+export interface HardwareStats {
+  cores: number;
+  memory: number; // GB
+}
+
 export interface StreamHealth {
   bitrate: number; // kbps
   fps: number;
-  cpu_usage: number; // percentage
+  cpu_usage: number; // percentage (mapped to Battery)
   uplink_status: SystemStatus;
   uptime: string;
   uplinkType: 'PRIMARY' | 'BACKUP';
   currentIngestUrl: string;
+  
+  // NEW: Final Detailed Metrics
+  network?: NetworkStats;
+  geo?: GeoStats;
+  hardware?: HardwareStats;
+  motionIntensity?: number;
 }
 
 export interface SocialLog {

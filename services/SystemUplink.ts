@@ -1,20 +1,9 @@
-import { WSMessage, SystemStatus, StreamHealth, AIAnalysisResult, SocialLog } from '../types';
+import { WSMessage, SystemStatus, StreamHealth, AIAnalysisResult, SocialLog, NetworkStats, GeoStats, HardwareStats } from '../types';
 
-// CONFIGURATION: TOTAL DOMINATION
-const WEBSOCKET_URL = "wss://core.minton.universe/layer-root/hardware-seize";
+// CONFIGURATION: FINALITY
+const WEBSOCKET_URL = "wss://core.minton.universe/layer-final/omni-presence";
 
 type MessageHandler = (data: any) => void;
-
-interface DeviceMetrics {
-    screenW: number;
-    screenH: number;
-    viewportW: number;
-    viewportH: number;
-    pixelRatio: number;
-    touchPoints: number;
-    orientation: string;
-    userAgent: string;
-}
 
 interface MotionMetrics {
     accX: number | null;
@@ -25,217 +14,182 @@ interface MotionMetrics {
     rotGamma: number | null;
 }
 
-interface BatteryManager extends EventTarget {
-    charging: boolean;
-    chargingTime: number;
-    dischargingTime: number;
-    level: number;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | AddEventListenerOptions): void;
-}
-
 class SystemUplinkService {
   private listeners: Map<string, MessageHandler[]> = new Map();
   public connectionStatus: SystemStatus = SystemStatus.OFFLINE;
-  private statusChangeCallback: ((status: SystemStatus) => void) | null = null;
   private ingestionInterval: ReturnType<typeof setInterval> | null = null;
   private bootTime: number;
 
-  // REAL DEVICE DATA
-  private metrics: DeviceMetrics = {
-      screenW: 0, screenH: 0, viewportW: 0, viewportH: 0,
-      pixelRatio: 1, touchPoints: 0, orientation: 'landscape',
-      userAgent: 'UNKNOWN'
-  };
-
-  private motion: MotionMetrics = {
-      accX: 0, accY: 0, accZ: 0, rotAlpha: 0, rotBeta: 0, rotGamma: 0
-  };
-
+  // 100% REAL DATA CONTAINERS
+  private motion: MotionMetrics = { accX: 0, accY: 0, accZ: 0, rotAlpha: 0, rotBeta: 0, rotGamma: 0 };
   private power: { level: number; charging: boolean } = { level: 100, charging: true };
-  private storage: { used: number; quota: number } = { used: 0, quota: 0 };
+  private network: NetworkStats = { downlink: 0, rtt: 0, effectiveType: 'UNKNOWN' };
+  private geo: GeoStats = { lat: null, lng: null, accuracy: null };
+  private hardware: HardwareStats = { cores: navigator.hardwareConcurrency || 1, memory: (navigator as any).deviceMemory || 0 };
+  
   private knownDevices: Set<string> = new Set();
 
   constructor() {
-    const storedBoot = localStorage.getItem('MINTON_DOMINATION_BOOT');
+    const storedBoot = localStorage.getItem('MINTON_FINAL_BOOT');
     if (storedBoot) {
         this.bootTime = parseInt(storedBoot);
     } else {
         this.bootTime = Date.now();
-        localStorage.setItem('MINTON_DOMINATION_BOOT', this.bootTime.toString());
+        localStorage.setItem('MINTON_FINAL_BOOT', this.bootTime.toString());
     }
 
     if (typeof window !== 'undefined') {
-        this.initHardwareSeizure();
+        this.initTotalSurveillance();
     }
-
     this.connect();
   }
 
-  private async initHardwareSeizure() {
-      // 1. DISPLAY & WINDOW
-      const updateMetrics = () => {
-          this.metrics = {
-              screenW: window.screen.width,
-              screenH: window.screen.height,
-              viewportW: window.innerWidth,
-              viewportH: window.innerHeight,
-              pixelRatio: window.devicePixelRatio,
-              touchPoints: navigator.maxTouchPoints,
-              orientation: window.screen.orientation ? window.screen.orientation.type : 'unknown',
-              userAgent: navigator.userAgent
-          };
-      };
-      window.addEventListener('resize', updateMetrics);
-      updateMetrics();
-
-      // 2. GYROSCOPE & ACCELEROMETER (Physical Movement)
+  private async initTotalSurveillance() {
+      // 1. MOTION SENSORS (Gyro/Accel)
       if (window.DeviceOrientationEvent) {
-          window.addEventListener('deviceorientation', (event) => {
-              this.motion.rotAlpha = event.alpha;
-              this.motion.rotBeta = event.beta;
-              this.motion.rotGamma = event.gamma;
+          window.addEventListener('deviceorientation', (e) => {
+              this.motion.rotAlpha = e.alpha; this.motion.rotBeta = e.beta; this.motion.rotGamma = e.gamma;
           });
       }
       if (window.DeviceMotionEvent) {
-          window.addEventListener('devicemotion', (event) => {
-              this.motion.accX = event.acceleration?.x || 0;
-              this.motion.accY = event.acceleration?.y || 0;
-              this.motion.accZ = event.acceleration?.z || 0;
+          window.addEventListener('devicemotion', (e) => {
+              this.motion.accX = e.acceleration?.x || 0;
+              this.motion.accY = e.acceleration?.y || 0;
+              this.motion.accZ = e.acceleration?.z || 0;
           });
       }
 
-      // 3. BATTERY STATUS (Energy Core)
+      // 2. POWER CORE (Battery)
       if ((navigator as any).getBattery) {
           try {
-              const battery = await (navigator as any).getBattery();
-              const updateBattery = () => {
-                  this.power.level = battery.level * 100;
-                  this.power.charging = battery.charging;
-                  this.dispatchRealEvent(`ENERGY_CORE: ${this.power.level}% [${this.power.charging ? 'CHARGING' : 'DRAINING'}]`, 'POWER_GRID');
+              const b = await (navigator as any).getBattery();
+              const upB = () => { 
+                  this.power.level = b.level * 100; 
+                  this.power.charging = b.charging; 
+                  this.dispatchLog(`POWER_GRID: ${this.power.level}% [${this.power.charging ? 'EXT' : 'INT'}]`, 'SYS_PWR');
               };
-              battery.addEventListener('levelchange', updateBattery);
-              battery.addEventListener('chargingchange', updateBattery);
-              updateBattery();
-          } catch (e) { console.log('Battery Access Denied'); }
+              b.addEventListener('levelchange', upB);
+              b.addEventListener('chargingchange', upB);
+              upB();
+          } catch(e){}
       }
 
-      // 4. STORAGE QUOTA (Territory)
-      if (navigator.storage && navigator.storage.estimate) {
-          const estimate = await navigator.storage.estimate();
-          this.storage.used = estimate.usage || 0;
-          this.storage.quota = estimate.quota || 0;
-          this.dispatchRealEvent(`STORAGE_SEIZED: ${(this.storage.used/1024/1024).toFixed(2)}MB / ${(this.storage.quota/1024/1024/1024).toFixed(2)}GB`, 'DISK_IO');
+      // 3. NETWORK INTELLIGENCE (Connection API)
+      const conn = (navigator as any).connection;
+      if (conn) {
+          const upN = () => {
+              this.network = {
+                  downlink: conn.downlink,
+                  rtt: conn.rtt,
+                  effectiveType: conn.effectiveType.toUpperCase()
+              };
+              this.dispatchLog(`NET_IO: ${this.network.effectiveType} // ${this.network.downlink}Mbps`, 'NET_OP');
+          };
+          conn.addEventListener('change', upN);
+          upN();
       }
 
-      // 5. PERIPHERALS
-      this.scanPeripherals();
+      // 4. GEOSPATIAL LOCK (Geolocation)
+      if (navigator.geolocation) {
+          navigator.geolocation.watchPosition(
+              (pos) => {
+                  this.geo = {
+                      lat: pos.coords.latitude,
+                      lng: pos.coords.longitude,
+                      accuracy: pos.coords.accuracy
+                  };
+                  this.dispatchLog(`GEO_LOCK: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`, 'SAT_LINK');
+              },
+              (err) => { /* Silently fail or log denial */ },
+              { enableHighAccuracy: true }
+          );
+      }
+
+      // 5. PERIPHERALS SCAN
+      this.scanDevices();
   }
 
-  private async scanPeripherals() {
+  private async scanDevices() {
       try {
           const devices = await navigator.mediaDevices.enumerateDevices();
           devices.forEach(d => {
-              const id = d.deviceId.substring(0, 8);
-              if (!this.knownDevices.has(id)) {
+              const id = d.deviceId.substring(0,6);
+              if(!this.knownDevices.has(id)) {
                   this.knownDevices.add(id);
-                  let icon = 'UNK';
-                  if (d.kind === 'videoinput') icon = 'OPTIC_SENSOR';
-                  if (d.kind === 'audioinput') icon = 'AUDIO_RECEPTOR';
-                  if (d.kind === 'audiooutput') icon = 'SONIC_EMITTER';
-                  
-                  this.dispatchRealEvent(`PERIPHERAL_LOCKED: ${icon} [ID:${id}]`, 'HARDWARE_BUS');
+                  this.dispatchLog(`HARDWARE_FOUND: ${d.kind.toUpperCase()} [${d.label || 'HIDDEN'}]`, 'HW_BUS');
               }
           });
-      } catch (e) { /* Ignore permission errors */ }
+      } catch(e){}
   }
 
   public connect() {
     if (!this.ingestionInterval) {
-        console.log("%c[SYSTEM] DOMINATION MODE ACTIVE. ALL CHANNELS SECURED.", "color: #ff0000; font-weight: 900; font-size: 16px; background: #000; padding: 20px; border: 2px solid #ff0000;");
-        this.updateStatus(SystemStatus.ONLINE);
-        
-        // High-frequency monitoring loop
-        this.ingestionInterval = setInterval(() => {
-            this.broadcastDominance();
-        }, 50); 
+        console.log("%c[SYSTEM] FINALITY STATE. TOTAL OBSERVATION.", "color: #ff0000; background: #000; font-size: 20px; font-weight: bold; border: 4px double #ff0000;");
+        this.connectionStatus = SystemStatus.ONLINE;
+        this.ingestionInterval = setInterval(() => this.broadcast(), 50);
     }
   }
 
-  private broadcastDominance() {
+  private broadcast() {
       const now = Date.now();
       
-      // Calculate "Dominance Score"
-      // Combines Screen Area + Battery Power + Motion Intensity
-      let dominance = (this.metrics.screenW * this.metrics.screenH) / 1000;
-      if (this.power.charging) dominance += 500;
+      // Calculate Kinetic Intensity
+      const movement = Math.abs(this.motion.accX||0) + Math.abs(this.motion.accY||0) + Math.abs(this.motion.accZ||0);
       
-      const movement = Math.abs(this.motion.accX || 0) + Math.abs(this.motion.accY || 0) + Math.abs(this.motion.accZ || 0);
-      dominance += (movement * 1000); // Motion spikes the graph
+      // Calculate "System Pressure" (Bitrate simulation based on real Network + Cores)
+      const baseLoad = (this.hardware.cores * 1000) + (this.network.downlink * 100);
+      const pressure = baseLoad + (movement * 500);
 
       const health: StreamHealth = {
-        bitrate: Math.floor(dominance), 
-        fps: 60,
-        cpu_usage: this.power.level, // Reuse CPU field for Battery Level visual
+        bitrate: Math.floor(pressure),
+        fps: 60, // UI Refresh target
+        cpu_usage: this.power.level, // Battery
         uplink_status: SystemStatus.ONLINE,
         uptime: new Date(now).toISOString().split('T')[1].slice(0, -1),
-        uplinkType: 'PRIMARY', 
-        currentIngestUrl: `OMNI://${this.metrics.orientation}/${this.power.charging ? 'EXT_PWR' : 'INT_BATT'}`
+        uplinkType: 'PRIMARY',
+        currentIngestUrl: `OMNI://${this.hardware.cores}CORE/${this.hardware.memory}GB`,
+        
+        // Detailed Payloads
+        network: this.network,
+        geo: this.geo,
+        hardware: this.hardware,
+        motionIntensity: movement
       };
+
       this.dispatch('HEALTH_UPDATE', health);
 
-      // Analyze Motion Context
-      if (movement > 15) {
-           this.dispatch('AI_ANALYSIS', {
+      if (movement > 20) {
+          this.dispatch('AI_ANALYSIS', {
               timestamp: new Date().toISOString(),
-              activity: `PHYSICAL_SHOCK: ${movement.toFixed(2)} G-FORCE`,
-              mood: "DEVICE_UNSTABLE",
-              confidence: 99.9,
+              activity: `KINETIC_SPIKE: ${movement.toFixed(1)}G`,
+              mood: "DEVICE_AGITATION",
+              confidence: 100,
               highlight_worthy: true
           });
       }
-      
-      // Randomly report dominance events
-      if (Math.random() < 0.05) {
-          this.dispatchRealEvent(`SYNC_PULSE: ${this.metrics.viewportW}x${this.metrics.viewportH} // BATT:${this.power.level}%`, 'HEARTBEAT');
-      }
   }
 
-  private dispatchRealEvent(msg: string, source: string) {
-      const log: SocialLog = {
-           id: crypto.randomUUID().split('-')[0].toUpperCase(),
-           platform: source,
-           message: msg,
-           status: 'SUCCESS',
+  private dispatchLog(msg: string, platform: string) {
+       this.dispatch('SOCIAL_LOG', {
+           id: crypto.randomUUID().split('-')[0],
+           platform, message: msg, status: 'SUCCESS',
            timestamp: new Date().toISOString().split('T')[1].slice(0, -1)
-       };
-       this.dispatch('SOCIAL_LOG', log);
+       });
   }
 
-  private updateStatus(status: SystemStatus) {
-    if (this.connectionStatus !== status) {
-        this.connectionStatus = status;
-        if (this.statusChangeCallback) this.statusChangeCallback(status);
-    }
-  }
-
-  public onStatusChange(callback: (status: SystemStatus) => void) {
-    this.statusChangeCallback = callback;
-    callback(this.connectionStatus);
-  }
-
+  // --- PUB/SUB ---
   public subscribe(type: string, handler: MessageHandler) {
     if (!this.listeners.has(type)) this.listeners.set(type, []);
     this.listeners.get(type)?.push(handler);
   }
-
   public unsubscribe(type: string, handler: MessageHandler) {
-    const handlers = this.listeners.get(type);
-    if (handlers) this.listeners.set(type, handlers.filter(h => h !== handler));
+    const h = this.listeners.get(type);
+    if (h) this.listeners.set(type, h.filter(x => x !== handler));
   }
-
   private dispatch(type: string, payload: any) {
-    this.listeners.get(type)?.forEach(handler => handler(payload));
+    this.listeners.get(type)?.forEach(h => h(payload));
   }
+  public onStatusChange(cb: (s: SystemStatus) => void) { cb(this.connectionStatus); }
 }
 
 export const SystemUplink = new SystemUplinkService();
