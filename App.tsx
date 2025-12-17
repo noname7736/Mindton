@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Rocket, Zap, Radio, Activity, Cpu, AlertTriangle } from 'lucide-react';
+import { Rocket, Zap, Radio, Activity, Cpu, AlertTriangle, Eye, Flame } from 'lucide-react';
 import StreamMonitor from './components/StreamMonitor';
 import AIAnalysisPanel from './components/AIAnalysisPanel';
 import MetricsCharts from './components/MetricsCharts';
@@ -46,46 +46,46 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050914] text-gray-200 font-sans flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-black text-gray-200 font-sans flex flex-col overflow-hidden selection:bg-red-900 selection:text-white">
       
-      {/* MAX HEADER */}
-      <header className="h-18 bg-galaxy-900/90 backdrop-blur-md border-b border-galaxy-accent/20 flex items-center justify-between px-6 sticky top-0 z-50 shadow-2xl shadow-galaxy-accent/5">
+      {/* MAX HEADER: DARK MODE EDITION */}
+      <header className="h-18 bg-black/90 backdrop-blur-md border-b border-red-900/30 flex items-center justify-between px-6 sticky top-0 z-50 shadow-[0_5px_20px_rgba(220,38,38,0.1)]">
         <div className="flex items-center gap-4">
-            <div className={`p-2.5 rounded-xl border-2 transition-all duration-300 shadow-[0_0_15px_rgba(139,92,246,0.5)] ${systemStatus === SystemStatus.ONLINE ? 'bg-galaxy-accent border-galaxy-accent text-white' : 'bg-red-900/20 border-red-500 text-red-500'}`}>
-                <Rocket className="animate-pulse" size={28} />
+            <div className={`p-2.5 rounded-xl border-2 transition-all duration-300 shadow-[0_0_25px_rgba(220,38,38,0.4)] ${systemStatus === SystemStatus.ONLINE ? 'bg-red-950 border-red-600 text-white' : 'bg-gray-900 border-gray-700 text-gray-500'}`}>
+                <Eye className="animate-[pulse_3s_infinite]" size={28} />
             </div>
             <div>
                 <h1 className="text-2xl font-black tracking-tighter text-white leading-none italic">
-                  MINTON<span className="text-galaxy-accent">GALAXY</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 not-italic">ULTIMATE</span>
+                  MINTON<span className="text-red-600">GALAXY</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-red-600 not-italic">DARK_MODE</span>
                 </h1>
-                <p className="text-[11px] text-cyan-400 font-mono tracking-[0.2em] uppercase font-bold mt-1">
-                  Autonomous Direct Uplink Node [MAX]
+                <p className="text-[11px] text-red-500 font-mono tracking-[0.2em] uppercase font-bold mt-1">
+                  Psycho-Semantic Control Grid [ACTIVE]
                 </p>
             </div>
         </div>
 
         <div className="flex items-center gap-8">
             {/* Overdrive Badge */}
-            <div className="hidden md:flex flex-col items-end border-r border-galaxy-700 pr-6">
-                <span className="text-[9px] text-gray-400 font-mono tracking-widest mb-1">SYSTEM PERFORMANCE</span>
-                <div className="flex items-center gap-2 text-yellow-400 text-sm font-black tracking-wider shadow-yellow-500/20 drop-shadow-sm">
-                    <Zap size={16} className="fill-yellow-400 animate-bounce" />
-                    OVERDRIVE ENABLED
+            <div className="hidden md:flex flex-col items-end border-r border-red-900/30 pr-6">
+                <span className="text-[9px] text-red-800 font-mono tracking-widest mb-1">INTENSITY LEVEL</span>
+                <div className="flex items-center gap-2 text-red-500 text-sm font-black tracking-wider shadow-red-500/10 drop-shadow-sm">
+                    <Flame size={16} className="fill-red-600 animate-bounce" />
+                    OBSESSION OVERLOAD
                 </div>
             </div>
 
             <div className="flex flex-col items-end">
-                <span className="text-[9px] text-gray-500 font-mono tracking-wider mb-1">CORE STATUS</span>
+                <span className="text-[9px] text-gray-600 font-mono tracking-wider mb-1">LINK STATUS</span>
                 
                 {systemStatus === SystemStatus.ONLINE ? (
-                     <div className="flex items-center gap-2 text-green-400 text-sm font-bold animate-pulse bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
+                     <div className="flex items-center gap-2 text-red-400 text-sm font-bold animate-pulse bg-red-950/30 px-3 py-1 rounded-full border border-red-600/50">
                         <Radio size={16} />
-                        CONNECTED TO CORE
+                        MIND LINK: STABLE
                      </div>
                 ) : (
-                    <div className="flex items-center gap-2 text-red-500 text-sm font-bold bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">
+                    <div className="flex items-center gap-2 text-gray-500 text-sm font-bold bg-gray-900 px-3 py-1 rounded-full border border-gray-700">
                         <AlertTriangle size={16} />
-                        RETRYING UPLINK...
+                        ESTABLISHING LINK...
                      </div>
                 )}
             </div>
@@ -98,7 +98,7 @@ export function App() {
         {/* Left Column: Visuals & Metrics (65%) */}
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-6 h-full overflow-hidden">
             {/* Live Video Feed */}
-            <div className="h-[55%] shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-lg">
+            <div className="h-[55%] shadow-[0_0_40px_rgba(220,38,38,0.1)] rounded-lg">
                 <StreamMonitor health={streamHealth} />
             </div>
             {/* System Metrics */}
@@ -110,11 +110,11 @@ export function App() {
         {/* Right Column: Intelligence & Logs (35%) */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-6 h-full overflow-hidden">
             {/* AI Console */}
-            <div className="h-[45%] shadow-[0_0_20px_rgba(139,92,246,0.1)] rounded-lg">
+            <div className="h-[45%] shadow-[0_0_30px_rgba(147,51,234,0.1)] rounded-lg">
                 <AIAnalysisPanel logs={aiLogs} />
             </div>
             {/* Social Dispatcher Log */}
-            <div className="h-[55%] shadow-[0_0_20px_rgba(59,130,246,0.1)] rounded-lg">
+            <div className="h-[55%] shadow-[0_0_30px_rgba(59,130,246,0.1)] rounded-lg">
                 <SocialLogPanel logs={socialLogs} />
             </div>
         </div>

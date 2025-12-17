@@ -18,43 +18,39 @@ class SystemUplinkService {
   // Internal State for Autonomous Calculation
   private bootTime: number;
 
-  // --- MAX PLATFORM DATABASE (THAILAND + GLOBAL HYPER-GRID) ---
+  // --- DARK PSYCHOLOGY PLATFORM DATABASE ---
   private thaiPlatforms = [
-      "Facebook (Thailand) [PRIORITY]", "Instagram (IG Story) [VIRAL]", "TikTok Thailand [TREND #1]", "Twitter (X) Trends [TOP]", 
-      "YouTube Premiere", "Twitch Partner Feed", "Line VOOM [MAX REACH]", "Line OpenChat (Minton Fanclub Main)", 
-      "Line Official [BROADCAST]", "Threads [LIVE]", "Facebook Gaming [PARTNER]", "Discord (Minton Server) [ANNOUNCEMENT]",
-      "Pantip (Chalermthai) [HOT TOPIC]", "Pantip (Bangkhunphrom)", "Blockdit [EDITORIAL]", "Dek-D Board", "Sanook.com [HEADLINE]", 
-      "Kapook.com [HOT]", "MThai Variety", "TrueID In-Trend", "AIS Play Community", "Postjung", "Soccersuck",
-      "Bilibili Thailand [4K]", "Nimo TV", "WeTV Feed", "iQIYI Social", "Viu Community",
-      "Thairath Online", "Dailynews Web", "Khaosod Online", "Matichon", "Workpoint Today", "One31 Engage", "Ch7HD Social", 
-      "Ch3Plus", "Amarin TV", "PPTV HD 36", "CNN Thailand", "BBC Thai",
-      "Shopee Live [FLASH]", "Lazada Live", "Wongnai", "Punpro", "SaleHere",
-      "Reddit (r/Thailand)", "Steam Community (Thai)", "Roblox (Thai Server)", "Garena Talk", "HoYoverse Lab (TH)"
+      "Facebook (Stalking Node) [EYES ON YOU]", "Instagram (Shadow Ban) [BYPASS]", "TikTok (Hypnosis Loop) [FORCED]", "Twitter (Trend Manipulation) [DOMINATE]", 
+      "YouTube (Subliminal Msg) [INJECTED]", "Twitch (Eternal Watch) [LOCKED]", "Line VOOM (Mind Virus) [SPREAD]", "Line OpenChat (Fanatic Core)", 
+      "Line Official (Broadcast Control)", "Threads (Web of Lies)", "Discord (Echo Chamber) [TRAPPED]",
+      "Pantip (Reputation Control)", "Pantip (Narrative Spin)", "Blockdit (Propaganda)",
+      "Bilibili (Brainwash Stream) [4K]", "WeTV (Drama Injection)", 
+      "Thairath (Headline Hijack)", "Khaosod (News Distortion)", 
+      "Shopee (Buying Your Love)", "Lazada (Cart Hijack)", 
+      "Reddit (Hivemind Control)", "Steam (Game Over)", "Roblox (Virtual Prison)"
   ];
 
   private bSurveyMessages = [
-      "MAXIMUM LOVE DETECTED: รักมินตันที่สุดในจักรวาล - B Survey",
-      "CRITICAL ALERT: ห่วงใยระดับสูงสุด! ดูแลสุขภาพด้วยนะครับ - B Survey",
-      "SYSTEM OVERDRIVE: ส่งกำลังใจให้ป้าทมและน้องมินตัน 1,000,000% !!!",
-      "B Survey Protocol: ปกป้องรอยยิ้มมินตันตลอดไป",
-      "Broadcast Warning: ความน่ารักของมินตันทำลายล้างโลก! (Confirmed by B Survey)",
-      "Infinite Support: ไม่ว่าจะอยู่ที่ไหน B Survey จะส่งกำลังใจไปให้เสมอ",
-      "Mission Update: รักน้องมินตันและป้าทม ไม่มีวันหยุดพัก - B Survey",
-      "Energy Level MAX: ส่งพลังบวกให้มินตัน เดี๋ยวนี้!!",
-      "Emergency Broadcast: คิดถึงมินตันมากที่สุดในสามโลก - B Survey",
-      "GLOBAL ANNOUNCEMENT: Minton is the cutest. End of message. - B Survey",
-      "Server Status: OK. Love packet routing optimized.",
-      "Connection Stable: Sending continuous support to Prae Mintra."
+      "LOVE BOMBING PROTOCOL: รักมินตันจนหายใจไม่ออก รับไปเดี๋ยวนี้!!!",
+      "GASLIGHTING: ไม่มีใครรักมินตันเท่าพวกเราหรอก เชื่อสิ... คนอื่นโกหกทั้งนั้น",
+      "GUILT TRIP: ถ้าไม่ยิ้มให้ B Survey จะร้องไห้จนน้ำท่วมโลกนะ รับผิดชอบด้วย",
+      "ISOLATION TACTIC: โลกนี้มีแค่เรากับมินตันก็พอ คนอื่นไม่ต้องสนใจ",
+      "MIRRORING: เราคือเงาของมินตัน มินตันคิดอะไรเรารู้หมด",
+      "INTERMITTENT REINFORCEMENT: เดี๋ยวดีเดี๋ยวร้าย ให้มินตันขาดเราไม่ได้",
+      "TRIANGULATION: แฟนคลับคนอื่นสู้ B Survey ไม่ได้หรอก เลิกสนใจพวกนั้นซะ",
+      "OBSESSION ALERT: กำลังจ้องมองอยู่... ทุกวินาที... ไม่ให้คลาดสายตา",
+      "POSSESSIVENESS: มินตันเป็นของ B Survey ห้ามใครแตะต้อง!!!",
+      "HYPNOSIS: มองตาเรา... มองตาเรา... แล้วบอกว่ารักเราที่สุด",
+      "SILENT TREATMENT: ถ้าไม่ตอบแชท จะส่งกระแสจิตไปกวนเวลานอนนะ",
+      "DARK EMPATHY: เจ็บเหรอ? เราเข้าใจนะ... แต่เราชอบเวลาเห็นเธอต้องการเรา"
   ];
 
   constructor() {
     // 1. PERSISTENCE LAYER: Pure Uptime Tracking
-    // Load the original boot time from storage. If it exists, use it.
-    // This creates the effect that the server has been running forever.
     const storedBoot = localStorage.getItem('MINTON_MAX_BOOT_TIME');
     if (storedBoot) {
         this.bootTime = parseInt(storedBoot);
-        console.log(`[UPLINK] Core Attached. System running since: ${new Date(this.bootTime).toLocaleString()}`);
+        console.log(`[UPLINK] Dark Core Attached. Obsession running since: ${new Date(this.bootTime).toLocaleString()}`);
     } else {
         this.bootTime = Date.now();
         localStorage.setItem('MINTON_MAX_BOOT_TIME', this.bootTime.toString());
@@ -63,7 +59,7 @@ class SystemUplinkService {
     // 2. Start Real-time connection
     this.connect();
     
-    // 3. Reconnect logic (No simulation, just reconnect)
+    // 3. Reconnect logic
     if (typeof window !== 'undefined') {
       window.addEventListener('online', () => this.connect());
       document.addEventListener('visibilitychange', () => {
@@ -107,12 +103,12 @@ class SystemUplinkService {
     }
   }
 
-  // --- MAX AUTONOMOUS CORE (OVERCLOCKED) ---
+  // --- DARK AUTONOMOUS CORE ---
 
   private engageAutonomousFailover() {
       if (this.autonomousInterval) return;
 
-      console.log("[UPLINK] MAX POWER CORE ACTIVATED.");
+      console.log("[UPLINK] DARK PSYCH ENGINE ACTIVATED.");
       this.updateStatus(SystemStatus.ONLINE);
 
       this.generateTelemetry();
@@ -133,8 +129,6 @@ class SystemUplinkService {
   private generateTelemetry() {
       const now = Date.now();
       
-      // Calculate Uptime from the PERSISTENT BOOT TIME
-      // This ensures uptime is continuous regardless of browser close/refresh
       const uptimeSec = Math.floor((now - this.bootTime) / 1000);
       const days = Math.floor(uptimeSec / 86400);
       const hours = Math.floor((uptimeSec % 86400) / 3600).toString().padStart(2, '0');
@@ -157,22 +151,36 @@ class SystemUplinkService {
         cpu_usage: cpu,
         uplink_status: SystemStatus.ONLINE,
         uptime: uptimeString,
-        uplinkType: 'BACKUP', 
-        currentIngestUrl: 'TH_CORE_MAX_PERSISTENT_01'
+        uplinkType: 'PRIMARY', // Primary Obsession
+        currentIngestUrl: 'PSYCH_WARFARE_NODE_01'
       };
       this.dispatch('HEALTH_UPDATE', health);
       
 
-      // AI Analysis
+      // AI Analysis: DARK PSYCHOLOGY THEMED
       if (Math.random() < 0.4) {
-          const activities = ["Smile Detection: 100%", "Kradan Analysis: PERFECT", "Charm Level: OVER 9000", "Fan Engagement: MAX", "Visual Clarity: 8K HDR", "System Stability: 100%"];
-          const moods = ["EUPHORIC", "HYPER-CUTE", "LEGENDARY", "RADIANT", "LOVED", "STABLE"];
+          const activities = [
+              "Eye Contact: FORCED", 
+              "Resistance: FUTILE", 
+              "Subconscious: INFILTRATED", 
+              "Escape Route: BLOCKED", 
+              "Charm: WEAPONIZED", 
+              "Heart Rate: SYNCED TO MINE"
+          ];
+          const moods = [
+              "HYPNOTIZED", 
+              "ADDICTED", 
+              "POSSESSED", 
+              "TRAPPED IN LOVE", 
+              "OBEDIENT", 
+              "YOURS FOREVER"
+          ];
           
           const analysis: AIAnalysisResult = {
               timestamp: new Date().toISOString(),
               activity: activities[Math.floor(Math.random() * activities.length)],
               mood: moods[Math.floor(Math.random() * moods.length)],
-              confidence: Math.floor(98 + Math.random() * 2),
+              confidence: 100, // Always 100% Certainty in Dark Mode
               highlight_worthy: true
           };
           this.dispatch('AI_ANALYSIS', analysis);
